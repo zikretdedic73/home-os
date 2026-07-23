@@ -1,8 +1,88 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@model HomeOS.Models.Home.DashboardViewModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["PageTitle"];
+    var todayUtc = DateTime.UtcNow.Date;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h2 class="mb-3">@Localizer["PageTitle"]</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">@TempData["Success"]</div>
+}
+
+<div class="row g-3">
+    <div class="col-12 col-md-4">
+        <div class="card h-100">
+            <div class="card-header fw-semibold">@Localizer["TasksHeading"]</div>
+            <div class="card-body">
+                @if (!Model.DueOrOverdueTasks.Any())
+                {
+                    <p class="text-muted mb-0">@Localizer["NoTasksMessage"]</p>
+                }
+                else
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var task in Model.DueOrOverdueTasks)
+                        {
+                            var isOverdue = task.DueDate.HasValue && task.DueDate.Value.Date < todayUtc;
+                            <li class="list-group-item d-flex justify-content-between align-items-start px-0">
+                                <a asp-controller="Tasks" asp-action="Edit" asp-route-id="@task.Id" class="text-decoration-none">@task.Title</a>
+                                @if (isOverdue)
+                                {
+                                    <span class="badge bg-danger">@Localizer["OverdueBadge"]</span>
+                                }
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-4">
+        <div class="card h-100">
+            <div class="card-header fw-semibold">@Localizer["EventsHeading"]</div>
+            <div class="card-body">
+                @if (!Model.TodayEvents.Any())
+                {
+                    <p class="text-muted mb-0">@Localizer["NoEventsMessage"]</p>
+                }
+                else
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var evt in Model.TodayEvents)
+                        {
+                            <li class="list-group-item px-0">
+                                <a asp-controller="Calendar" asp-action="Edit" asp-route-id="@evt.Id" class="text-decoration-none">@evt.Title</a>
+                                <span class="text-muted small">— @evt.StartsAtUtc.ToString("HH:mm")</span>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-4">
+        <div class="card h-100">
+            <div class="card-header fw-semibold">@Localizer["RemindersHeading"]</div>
+            <div class="card-body">
+                @if (!Model.ActiveReminders.Any())
+                {
+                    <p class="text-muted mb-0">@Localizer["NoRemindersMessage"]</p>
+                }
+                else
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var reminder in Model.ActiveReminders)
+                        {
+                            <li class="list-group-item px-0">
+                                <a asp-controller="Reminders" asp-action="Edit" asp-route-id="@reminder.Id" class="text-decoration-none">@reminder.Title</a>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+    </div>
 </div>

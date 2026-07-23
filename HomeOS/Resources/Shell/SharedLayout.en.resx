@@ -57,4 +57,31 @@
   <data name="LogoutButton" xml:space="preserve">
     <value>Logout</value>
   </data>
+  <data name="RemindersBellLabel" xml:space="preserve">
+    <value>Active reminders</value>
+  </data>
+  <data name="QuickCaptureModalTitle" xml:space="preserve">
+    <value>Quick capture</value>
+  </data>
+  <data name="QuickCaptureTypeLabel" xml:space="preserve">
+    <value>Add a</value>
+  </data>
+  <data name="QuickCaptureTaskOption" xml:space="preserve">
+    <value>Task</value>
+  </data>
+  <data name="QuickCaptureReminderOption" xml:space="preserve">
+    <value>Reminder</value>
+  </data>
+  <data name="QuickCaptureTitleLabel" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="QuickCaptureWhenLabel" xml:space="preserve">
+    <value>When (optional)</value>
+  </data>
+  <data name="QuickCaptureSaveButton" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="QuickCaptureCancelButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
 </root>

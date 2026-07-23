@@ -57,4 +57,31 @@
   <data name="LogoutButton" xml:space="preserve">
     <value>Odjava</value>
   </data>
+  <data name="RemindersBellLabel" xml:space="preserve">
+    <value>Aktivni podsjetnici</value>
+  </data>
+  <data name="QuickCaptureModalTitle" xml:space="preserve">
+    <value>Brzi unos</value>
+  </data>
+  <data name="QuickCaptureTypeLabel" xml:space="preserve">
+    <value>Dodaj</value>
+  </data>
+  <data name="QuickCaptureTaskOption" xml:space="preserve">
+    <value>Zadatak</value>
+  </data>
+  <data name="QuickCaptureReminderOption" xml:space="preserve">
+    <value>Podsjetnik</value>
+  </data>
+  <data name="QuickCaptureTitleLabel" xml:space="preserve">
+    <value>Naziv</value>
+  </data>
+  <data name="QuickCaptureWhenLabel" xml:space="preserve">
+    <value>Kada (opciono)</value>
+  </data>
+  <data name="QuickCaptureSaveButton" xml:space="preserve">
+    <value>Dodaj</value>
+  </data>
+  <data name="QuickCaptureCancelButton" xml:space="preserve">
+    <value>Otkaži</value>
+  </data>
 </root>

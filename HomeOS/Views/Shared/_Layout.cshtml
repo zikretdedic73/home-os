@@ -1,9 +1,20 @@
 @using Microsoft.Extensions.Localization
 @using HomeOS.Resources.Shell
+@using HomeOS.Services
 @inject IStringLocalizer<SharedLayout> Localizer
+@inject ICurrentHouseholdService Household
+@inject IReminderNotificationService Reminders
 @{
     var currentCulture = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
     var returnUrl = Context.Request.Path + Context.Request.QueryString;
+
+    var activeReminderCount = 0;
+    if (User.Identity?.IsAuthenticated == true)
+    {
+        var currentHouseholdId = await Household.GetCurrentHouseholdIdAsync();
+        var currentMemberId = await Household.GetCurrentMemberIdAsync();
+        activeReminderCount = (await Reminders.GetActiveRemindersForMemberAsync(currentHouseholdId, currentMemberId)).Count;
+    }
 }
 <!DOCTYPE html>
 <html lang="@currentCulture">
@@ -35,6 +46,19 @@
                         <li class="nav-item"><a class="nav-link" asp-controller="ShoppingLists" asp-action="Index">@Localizer["ShoppingListsNavLink"]</a></li>
                     </ul>
                     <div class="d-flex align-items-center gap-2">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#quickCaptureModal">
+                                ➕ @Localizer["QuickCaptureButton"]
+                            </button>
+                            <a asp-controller="Reminders" asp-action="Index" class="btn btn-outline-secondary btn-sm position-relative" aria-label="@Localizer["RemindersBellLabel"]">
+                                🔔
+                                @if (activeReminderCount > 0)
+                                {
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">@activeReminderCount</span>
+                                }
+                            </a>
+                        }
                         <form asp-controller="Home" asp-action="SetLanguage" method="post" class="mb-0">
                             <input type="hidden" name="returnUrl" value="@returnUrl" />
                             <select name="culture" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()" aria-label="@Localizer["LanguageSwitcherLabel"]">
@@ -53,6 +77,44 @@
             @RenderBody()
         </main>
     </div>
+
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <div class="modal fade" id="quickCaptureModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form asp-controller="Home" asp-action="QuickCapture" method="post">
+                        <input type="hidden" name="returnUrl" value="@returnUrl" />
+                        <div class="modal-header">
+                            <h5 class="modal-title">@Localizer["QuickCaptureModalTitle"]</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">@Localizer["QuickCaptureTypeLabel"]</label>
+                                <select name="type" class="form-select">
+                                    <option value="task">@Localizer["QuickCaptureTaskOption"]</option>
+                                    <option value="reminder">@Localizer["QuickCaptureReminderOption"]</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">@Localizer["QuickCaptureTitleLabel"]</label>
+                                <input type="text" name="title" class="form-control" required />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">@Localizer["QuickCaptureWhenLabel"]</label>
+                                <input type="datetime-local" name="when" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@Localizer["QuickCaptureCancelButton"]</button>
+                            <button type="submit" class="btn btn-primary">@Localizer["QuickCaptureSaveButton"]</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

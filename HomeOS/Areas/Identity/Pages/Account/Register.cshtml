@@ -1,0 +1,33 @@
+@page
+@model HomeOS.Areas.Identity.Pages.Account.RegisterModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["PageTitle"];
+}
+
+<h1>@Localizer["PageTitle"]</h1>
+<div class="row">
+    <div class="col-12 col-md-6">
+        <form id="registerForm" method="post">
+            @Html.AntiForgeryToken()
+            <h2>@Localizer["CreateAccountHeading"]</h2>
+            <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+            <div class="mb-3">
+                <label asp-for="Input.Email" class="form-label">@Localizer["EmailLabel"]</label>
+                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Input.Password" class="form-label">@Localizer["PasswordLabel"]</label>
+                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Input.ConfirmPassword" class="form-label">@Localizer["ConfirmPasswordLabel"]</label>
+                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+            <button id="registerSubmit" type="submit" class="btn btn-primary">@Localizer["RegisterButton"]</button>
+        </form>
+    </div>
+</div>

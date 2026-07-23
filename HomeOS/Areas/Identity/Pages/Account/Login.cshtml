@@ -1,0 +1,32 @@
+@page
+@model HomeOS.Areas.Identity.Pages.Account.LoginModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["PageTitle"];
+}
+
+<h1>@Localizer["PageTitle"]</h1>
+<div class="row">
+    <div class="col-12 col-md-6">
+        <form id="account" method="post">
+            @Html.AntiForgeryToken()
+            <h2>@Localizer["LoginHeading"]</h2>
+            <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+            <div class="mb-3">
+                <label asp-for="Input.Email" class="form-label">@Localizer["EmailLabel"]</label>
+                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Input.Password" class="form-label">@Localizer["PasswordLabel"]</label>
+                <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+            <div class="mb-3 form-check">
+                <input class="form-check-input" asp-for="Input.RememberMe" />
+                <label asp-for="Input.RememberMe" class="form-check-label">@Localizer["RememberMeLabel"]</label>
+            </div>
+            <button id="login-submit" type="submit" class="btn btn-primary">@Localizer["LoginButton"]</button>
+        </form>
+    </div>
+</div>

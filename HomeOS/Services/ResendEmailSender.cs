@@ -22,12 +22,12 @@ public class ResendEmailSender : IEmailSender
         _logger = logger;
     }
 
-    public async Task SendEmailAsync(string toEmail, string subject, string htmlBody)
+    public async Task<bool> SendEmailAsync(string toEmail, string subject, string htmlBody)
     {
         if (string.IsNullOrWhiteSpace(_options.ApiKey))
         {
             _logger.LogInformation("Resend API key is not configured - skipping email to {ToEmail}.", toEmail);
-            return;
+            return false;
         }
 
         _httpClient.BaseAddress ??= new Uri("https://api.resend.com/");
@@ -47,6 +47,9 @@ public class ResendEmailSender : IEmailSender
         {
             var body = await response.Content.ReadAsStringAsync();
             _logger.LogWarning("Resend email to {ToEmail} failed with status {StatusCode}: {Body}", toEmail, response.StatusCode, body);
+            return false;
         }
+
+        return true;
     }
 }

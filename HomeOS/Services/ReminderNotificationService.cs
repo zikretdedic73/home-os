@@ -44,6 +44,7 @@ public class ReminderNotificationService : IReminderNotificationService
                 var member = await _context.Members.FindAsync(recipient.MemberId);
                 var user = member == null ? null : await _userManager.FindByIdAsync(member.IdentityUserId);
 
+                var emailSent = false;
                 if (user?.Email != null)
                 {
                     var subject = string.Format(_localizer["ReminderDueEmailSubject"], reminder.Title);
@@ -52,10 +53,14 @@ public class ReminderNotificationService : IReminderNotificationService
                         reminder.Title,
                         reminder.TriggerAtUtc.ToString("dd.MM.yyyy HH:mm"));
 
-                    await _emailSender.SendEmailAsync(user.Email, subject, body);
+                    emailSent = await _emailSender.SendEmailAsync(user.Email, subject, body);
                 }
 
-                recipient.NotifiedViaEmail = true;
+                // Only mark as notified once the email actually went out - a
+                // failed send (e.g. Resend sandbox restrictions, no API key
+                // yet) should retry on the next due-reminder check rather
+                // than being silently marked as delivered.
+                recipient.NotifiedViaEmail = emailSent;
                 recipient.NotifiedInAppAtUtc = nowUtc;
                 anyNotified = true;
             }

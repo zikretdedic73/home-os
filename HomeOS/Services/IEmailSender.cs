@@ -5,5 +5,8 @@ namespace HomeOS.Services;
 // section 1.3 - do not write a second email integration per module.
 public interface IEmailSender
 {
-    Task SendEmailAsync(string toEmail, string subject, string htmlBody);
+    // Returns whether the email was actually accepted by the provider -
+    // callers use this to decide whether to retry later instead of silently
+    // marking a failed send as done.
+    Task<bool> SendEmailAsync(string toEmail, string subject, string htmlBody);
 }

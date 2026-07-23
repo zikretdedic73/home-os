@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# HomeOS - local secrets, never committed (see Docs/02_Pravila_Programiranja.md section 6.3)
+appsettings.Development.json

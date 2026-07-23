@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppName" xml:space="preserve">
+    <value>Home OS</value>
+  </data>
+  <data name="DashboardNavLink" xml:space="preserve">
+    <value>Kontrolna tabla</value>
+  </data>
+  <data name="TasksNavLink" xml:space="preserve">
+    <value>Zadaci</value>
+  </data>
+  <data name="KanbanNavLink" xml:space="preserve">
+    <value>Kanban</value>
+  </data>
+  <data name="CalendarNavLink" xml:space="preserve">
+    <value>Kalendar</value>
+  </data>
+  <data name="RemindersNavLink" xml:space="preserve">
+    <value>Podsjetnici</value>
+  </data>
+  <data name="NotesNavLink" xml:space="preserve">
+    <value>Bilješke</value>
+  </data>
+  <data name="FinanceNavLink" xml:space="preserve">
+    <value>Finansije</value>
+  </data>
+  <data name="LifeAdminNavLink" xml:space="preserve">
+    <value>Kućna administracija</value>
+  </data>
+  <data name="ShoppingListsNavLink" xml:space="preserve">
+    <value>Kupovina</value>
+  </data>
+  <data name="QuickCaptureButton" xml:space="preserve">
+    <value>Brzi unos</value>
+  </data>
+  <data name="LanguageSwitcherLabel" xml:space="preserve">
+    <value>Jezik</value>
+  </data>
+  <data name="RegisterButton" xml:space="preserve">
+    <value>Registracija</value>
+  </data>
+  <data name="LoginButton" xml:space="preserve">
+    <value>Prijava</value>
+  </data>
+  <data name="LogoutButton" xml:space="preserve">
+    <value>Odjava</value>
+  </data>
+</root>

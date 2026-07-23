@@ -1,48 +1,63 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+@using Microsoft.Extensions.Localization
+@using HomeOS.Resources.Shell
+@inject IStringLocalizer<SharedLayout> Localizer
+@{
+    var currentCulture = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+    var returnUrl = Context.Request.Path + Context.Request.QueryString;
+}
+<!DOCTYPE html>
+<html lang="@currentCulture">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - HomeOS</title>
+    <title>@ViewData["Title"] - @Localizer["AppName"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/HomeOS.styles.css" asp-append-version="true" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">HomeOS</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">🏠 @Localizer["AppName"]</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <div class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">@Localizer["DashboardNavLink"]</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Tasks" asp-action="Index">@Localizer["TasksNavLink"]</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Kanban" asp-action="Index">@Localizer["KanbanNavLink"]</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Calendar" asp-action="Index">@Localizer["CalendarNavLink"]</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Reminders" asp-action="Index">@Localizer["RemindersNavLink"]</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Notes" asp-action="Index">@Localizer["NotesNavLink"]</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Finance" asp-action="Index">@Localizer["FinanceNavLink"]</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="LifeAdmin" asp-action="Index">@Localizer["LifeAdminNavLink"]</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="ShoppingLists" asp-action="Index">@Localizer["ShoppingListsNavLink"]</a></li>
                     </ul>
+                    <div class="d-flex align-items-center gap-2">
+                        <form asp-controller="Home" asp-action="SetLanguage" method="post" class="mb-0">
+                            <input type="hidden" name="returnUrl" value="@returnUrl" />
+                            <select name="culture" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()" aria-label="@Localizer["LanguageSwitcherLabel"]">
+                                <option value="en" selected="@(currentCulture == "en")">EN</option>
+                                <option value="bs" selected="@(currentCulture == "bs")">BS</option>
+                            </select>
+                        </form>
+                        <partial name="_LoginPartial" />
+                    </div>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container-fluid px-3 px-md-4">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - HomeOS - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

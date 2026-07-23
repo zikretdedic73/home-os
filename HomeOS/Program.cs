@@ -19,6 +19,10 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 // --- Core services (shared by every module - see Docs/02_Pravila_Programiranja.md) ---
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentHouseholdService, CurrentHouseholdService>();
+builder.Services.AddSingleton<IRecurrenceService, RecurrenceService>();
+builder.Services.Configure<ResendOptions>(builder.Configuration.GetSection("Resend"));
+builder.Services.AddHttpClient<IEmailSender, ResendEmailSender>();
+builder.Services.AddScoped<IReminderNotificationService, ReminderNotificationService>();
 
 // --- Localization (Shell provides the mechanism, each module owns its own .resx -
 // see Docs/02_Pravila_Programiranja.md, section 5) ---

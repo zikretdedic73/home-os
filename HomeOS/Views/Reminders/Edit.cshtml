@@ -1,0 +1,53 @@
+@model HomeOS.Models.Reminders.Reminder
+@using HomeOS.Models.Households
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["PageTitle"];
+    var members = ViewBag.Members as List<Member>;
+    var selectedMemberIds = ViewBag.SelectedMemberIds as List<int> ?? new List<int>();
+}
+
+<h2>@Localizer["PageTitle"]</h2>
+
+<form asp-action="Edit" asp-route-id="@Model.Id" method="post" class="row g-3 mt-2">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="col-12">
+        <label class="form-label">@Localizer["TitleLabel"]</label>
+        <input asp-for="Title" class="form-control" required />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="col-12 col-md-6">
+        <label class="form-label">@Localizer["TriggerAtLabel"]</label>
+        <input asp-for="TriggerAtUtc" type="datetime-local" class="form-control" required />
+    </div>
+    <div class="col-12 col-md-6">
+        <label class="form-label">@Localizer["RecurrenceLabel"]</label>
+        <select asp-for="RecurrenceRule" class="form-select">
+            <option value="">@Localizer["RecurrenceNone"]</option>
+            <option value="daily">@Localizer["RecurrenceDaily"]</option>
+            <option value="weekly">@Localizer["RecurrenceWeekly"]</option>
+            <option value="monthly">@Localizer["RecurrenceMonthly"]</option>
+            <option value="yearly">@Localizer["RecurrenceYearly"]</option>
+        </select>
+    </div>
+    <div class="col-12">
+        <label class="form-label">@Localizer["RecipientsLabel"]</label>
+        <div class="d-flex flex-wrap gap-3">
+            @if (members != null)
+            {
+                foreach (var m in members)
+                {
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="recipientMemberIds" value="@m.Id" id="member-@m.Id" checked="@selectedMemberIds.Contains(m.Id)" />
+                        <label class="form-check-label" for="member-@m.Id">@m.DisplayName</label>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">@Localizer["SaveChangesButton"]</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">@Localizer["BackButton"]</a>
+    </div>
+</form>

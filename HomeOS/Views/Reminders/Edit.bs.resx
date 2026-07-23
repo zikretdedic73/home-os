@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="PageTitle" xml:space="preserve">
+    <value>Izmjena podsjetnika</value>
+  </data>
+  <data name="TitleLabel" xml:space="preserve">
+    <value>Naziv</value>
+  </data>
+  <data name="TriggerAtLabel" xml:space="preserve">
+    <value>Datum i vrijeme</value>
+  </data>
+  <data name="RecurrenceLabel" xml:space="preserve">
+    <value>Ponavljanje</value>
+  </data>
+  <data name="RecurrenceNone" xml:space="preserve">
+    <value>Ne ponavlja se</value>
+  </data>
+  <data name="RecurrenceDaily" xml:space="preserve">
+    <value>Dnevno</value>
+  </data>
+  <data name="RecurrenceWeekly" xml:space="preserve">
+    <value>Sedmično</value>
+  </data>
+  <data name="RecurrenceMonthly" xml:space="preserve">
+    <value>Mjesečno</value>
+  </data>
+  <data name="RecurrenceYearly" xml:space="preserve">
+    <value>Godišnje</value>
+  </data>
+  <data name="RecipientsLabel" xml:space="preserve">
+    <value>Obavijesti</value>
+  </data>
+  <data name="SaveChangesButton" xml:space="preserve">
+    <value>Sačuvaj izmjene</value>
+  </data>
+  <data name="BackButton" xml:space="preserve">
+    <value>Nazad</value>
+  </data>
+</root>

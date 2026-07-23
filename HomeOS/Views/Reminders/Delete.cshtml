@@ -1,0 +1,14 @@
+@model HomeOS.Models.Reminders.Reminder
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["PageTitle"];
+}
+
+<h2>@Localizer["PageTitle"]</h2>
+<p>@string.Format(Localizer["ConfirmDeleteMessageFormat"].Value, Model.Title)</p>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">@Localizer["ConfirmDeleteButton"]</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">@Localizer["CancelButton"]</a>
+</form>

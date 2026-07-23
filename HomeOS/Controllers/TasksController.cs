@@ -24,7 +24,7 @@ public class TasksController : Controller
     }
 
     // GET: /Tasks
-    public async Task<IActionResult> Index(TaskState? statusFilter, TaskPriority? priorityFilter, int? assigneeFilter)
+    public async Task<IActionResult> Index(TaskState? statusFilter, TaskPriority? priorityFilter, int? assigneeFilter, string? sortBy)
     {
         var householdId = await _household.GetCurrentHouseholdIdAsync();
 
@@ -43,15 +43,20 @@ public class TasksController : Controller
         if (assigneeFilter.HasValue)
             query = query.Where(t => t.AssigneeId == assigneeFilter.Value);
 
-        var tasks = await query
-            .OrderBy(t => t.DueDate == null)
-            .ThenBy(t => t.DueDate)
-            .ToListAsync();
+        var orderedQuery = sortBy switch
+        {
+            "priority" => query.OrderByDescending(t => t.Priority),
+            "assignee" => query.OrderBy(t => t.AssigneeId == null).ThenBy(t => t.AssigneeId),
+            _ => query.OrderBy(t => t.DueDate == null).ThenBy(t => t.DueDate)
+        };
+
+        var tasks = await orderedQuery.ToListAsync();
 
         ViewBag.Members = await GetMembersAsync(householdId);
         ViewBag.StatusFilter = statusFilter;
         ViewBag.PriorityFilter = priorityFilter;
         ViewBag.AssigneeFilter = assigneeFilter;
+        ViewBag.SortBy = sortBy ?? "duedate";
 
         return View(tasks);
     }

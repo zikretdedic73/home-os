@@ -30,6 +30,15 @@
   <data name="ClearFilters" xml:space="preserve">
     <value>Poništi filtere</value>
   </data>
+  <data name="SortByDueDate" xml:space="preserve">
+    <value>Sortiraj: rok</value>
+  </data>
+  <data name="SortByPriority" xml:space="preserve">
+    <value>Sortiraj: prioritet</value>
+  </data>
+  <data name="SortByAssignee" xml:space="preserve">
+    <value>Sortiraj: član</value>
+  </data>
   <data name="NoTasksMatchFilter" xml:space="preserve">
     <value>Nema zadataka koji odgovaraju filteru.</value>
   </data>

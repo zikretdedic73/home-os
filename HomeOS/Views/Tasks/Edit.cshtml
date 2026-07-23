@@ -1,11 +1,17 @@
 @model HomeOS.Models.Tasks.TaskItem
 @using HomeOS.Models.Households
 @using HomeOS.Models.Tasks
+@using Microsoft.AspNetCore.Mvc.Rendering
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@inject Microsoft.Extensions.Localization.IStringLocalizer<TaskEnums> EnumLocalizer
 @{
     ViewData["Title"] = Localizer["PageTitle"];
     var members = ViewBag.Members as List<Member>;
     var tagsInput = ViewBag.TagsInput as string;
+    var priorityOptions = Enum.GetValues<TaskPriority>()
+        .Select(p => new SelectListItem(EnumLocalizer[$"TaskPriority_{p}"], p.ToString()));
+    var statusOptions = Enum.GetValues<TaskState>()
+        .Select(s => new SelectListItem(EnumLocalizer[$"TaskState_{s}"], s.ToString()));
 }
 
 <h2>@Localizer["PageTitle"]</h2>
@@ -28,11 +34,11 @@
     </div>
     <div class="col-12 col-md-4">
         <label class="form-label">@Localizer["PriorityLabel"]</label>
-        <select asp-for="Priority" class="form-select" asp-items="Html.GetEnumSelectList<TaskPriority>()"></select>
+        <select asp-for="Priority" class="form-select" asp-items="priorityOptions"></select>
     </div>
     <div class="col-12 col-md-4">
         <label class="form-label">@Localizer["StatusLabel"]</label>
-        <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<TaskState>()"></select>
+        <select asp-for="Status" class="form-select" asp-items="statusOptions"></select>
     </div>
     <div class="col-12 col-md-6">
         <label class="form-label">@Localizer["AssigneeLabel"]</label>

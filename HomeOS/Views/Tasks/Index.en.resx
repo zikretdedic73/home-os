@@ -30,6 +30,15 @@
   <data name="ClearFilters" xml:space="preserve">
     <value>Clear filters</value>
   </data>
+  <data name="SortByDueDate" xml:space="preserve">
+    <value>Sort: due date</value>
+  </data>
+  <data name="SortByPriority" xml:space="preserve">
+    <value>Sort: priority</value>
+  </data>
+  <data name="SortByAssignee" xml:space="preserve">
+    <value>Sort: assignee</value>
+  </data>
   <data name="NoTasksMatchFilter" xml:space="preserve">
     <value>No tasks match this filter.</value>
   </data>

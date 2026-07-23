@@ -2,6 +2,7 @@
 @using HomeOS.Models.Households
 @using HomeOS.Models.Tasks
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@inject Microsoft.Extensions.Localization.IStringLocalizer<TaskEnums> EnumLocalizer
 @{
     ViewData["Title"] = Localizer["PageTitle"];
     var members = ViewBag.Members as List<Member>;
@@ -23,7 +24,7 @@
             <option value="">@Localizer["AllStatuses"]</option>
             @foreach (var s in Enum.GetValues<TaskState>())
             {
-                <option value="@s" selected="@(ViewBag.StatusFilter?.ToString() == s.ToString())">@s</option>
+                <option value="@s" selected="@(ViewBag.StatusFilter?.ToString() == s.ToString())">@EnumLocalizer[$"TaskState_{s}"]</option>
             }
         </select>
     </div>
@@ -32,7 +33,7 @@
             <option value="">@Localizer["AllPriorities"]</option>
             @foreach (var p in Enum.GetValues<TaskPriority>())
             {
-                <option value="@p" selected="@(ViewBag.PriorityFilter?.ToString() == p.ToString())">@p</option>
+                <option value="@p" selected="@(ViewBag.PriorityFilter?.ToString() == p.ToString())">@EnumLocalizer[$"TaskPriority_{p}"]</option>
             }
         </select>
     </div>
@@ -46,6 +47,13 @@
                     <option value="@m.Id" selected="@(ViewBag.AssigneeFilter?.ToString() == m.Id.ToString())">@m.DisplayName</option>
                 }
             }
+        </select>
+    </div>
+    <div class="col-12 col-sm-6 col-md-3">
+        <select name="sortBy" class="form-select" onchange="this.form.submit()">
+            <option value="duedate" selected="@(ViewBag.SortBy == "duedate")">@Localizer["SortByDueDate"]</option>
+            <option value="priority" selected="@(ViewBag.SortBy == "priority")">@Localizer["SortByPriority"]</option>
+            <option value="assignee" selected="@(ViewBag.SortBy == "assignee")">@Localizer["SortByAssignee"]</option>
         </select>
     </div>
     <div class="col-12 col-sm-6 col-md-3">
@@ -87,8 +95,8 @@ else
                             <p class="card-text text-muted small">@task.Description</p>
                         }
                         <p class="mb-1">
-                            <span class="badge bg-secondary">@task.Status</span>
-                            <span class="badge bg-info text-dark">@task.Priority</span>
+                            <span class="badge bg-secondary">@EnumLocalizer[$"TaskState_{task.Status}"]</span>
+                            <span class="badge bg-info text-dark">@EnumLocalizer[$"TaskPriority_{task.Priority}"]</span>
                         </p>
                         @if (task.DueDate.HasValue)
                         {

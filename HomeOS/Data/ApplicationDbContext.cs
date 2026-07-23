@@ -1,3 +1,4 @@
+using HomeOS.Models.Calendar;
 using HomeOS.Models.Households;
 using HomeOS.Models.Reminders;
 using HomeOS.Models.Tasks;
@@ -24,6 +25,8 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     public DbSet<TaskTag> TaskTags => Set<TaskTag>();
     public DbSet<Reminder> Reminders => Set<Reminder>();
     public DbSet<ReminderRecipient> ReminderRecipients => Set<ReminderRecipient>();
+    public DbSet<Event> Events => Set<Event>();
+    public DbSet<EventAttendee> EventAttendees => Set<EventAttendee>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -57,10 +60,20 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
             .HasForeignKey(rr => rr.ReminderId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        // EventAttendee is a many-to-many join table with a composite key
+        builder.Entity<EventAttendee>().HasKey(ea => new { ea.EventId, ea.MemberId });
+
+        builder.Entity<EventAttendee>()
+            .HasOne(ea => ea.Event)
+            .WithMany(e => e.Attendees)
+            .HasForeignKey(ea => ea.EventId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         // HouseholdId indexes - rule from Docs/02_Pravila_Programiranja.md, section 3
         builder.Entity<TaskItem>().HasIndex(t => t.HouseholdId);
         builder.Entity<Member>().HasIndex(m => m.HouseholdId);
         builder.Entity<Tag>().HasIndex(t => t.HouseholdId);
         builder.Entity<Reminder>().HasIndex(r => r.HouseholdId);
+        builder.Entity<Event>().HasIndex(e => e.HouseholdId);
     }
 }

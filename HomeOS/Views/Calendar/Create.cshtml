@@ -1,0 +1,60 @@
+@model HomeOS.Models.Calendar.Event
+@using HomeOS.Models.Households
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["PageTitle"];
+    var members = ViewBag.Members as List<Member>;
+}
+
+<h2>@Localizer["PageTitle"]</h2>
+
+<form asp-action="Create" method="post" class="row g-3 mt-2">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="col-12">
+        <label class="form-label">@Localizer["TitleLabel"]</label>
+        <input asp-for="Title" class="form-control" required />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="col-12 col-md-6">
+        <label class="form-label">@Localizer["StartLabel"]</label>
+        <input asp-for="StartsAtUtc" type="datetime-local" class="form-control" required />
+    </div>
+    <div class="col-12 col-md-6">
+        <label class="form-label">@Localizer["EndLabel"]</label>
+        <input asp-for="EndsAtUtc" type="datetime-local" class="form-control" required />
+    </div>
+    <div class="col-12 col-md-6">
+        <label class="form-label">@Localizer["LocationLabel"]</label>
+        <input asp-for="Location" class="form-control" />
+    </div>
+    <div class="col-12 col-md-6">
+        <label class="form-label">@Localizer["RecurrenceLabel"]</label>
+        <select asp-for="RecurrenceRule" class="form-select">
+            <option value="">@Localizer["RecurrenceNone"]</option>
+            <option value="daily">@Localizer["RecurrenceDaily"]</option>
+            <option value="weekly">@Localizer["RecurrenceWeekly"]</option>
+            <option value="monthly">@Localizer["RecurrenceMonthly"]</option>
+            <option value="yearly">@Localizer["RecurrenceYearly"]</option>
+        </select>
+    </div>
+    <div class="col-12">
+        <label class="form-label">@Localizer["AttendeesLabel"]</label>
+        <div class="d-flex flex-wrap gap-3">
+            @if (members != null)
+            {
+                foreach (var m in members)
+                {
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="attendeeMemberIds" value="@m.Id" id="attendee-@m.Id" />
+                        <label class="form-check-label" for="attendee-@m.Id">@m.DisplayName</label>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">@Localizer["SaveButton"]</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">@Localizer["CancelButton"]</a>
+    </div>
+</form>

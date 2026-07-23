@@ -1,0 +1,128 @@
+@model List<HomeOS.Models.Tasks.TaskItem>
+@using HomeOS.Models.Households
+@using HomeOS.Models.Tasks
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["PageTitle"];
+    var members = ViewBag.Members as List<Member>;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <h2 class="mb-0">@Localizer["PageTitle"]</h2>
+    <a asp-action="Create" class="btn btn-primary">➕ @Localizer["NewTaskButton"]</a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">@TempData["Success"]</div>
+}
+
+<form method="get" class="row g-2 mb-4">
+    <div class="col-12 col-sm-6 col-md-3">
+        <select name="statusFilter" class="form-select" onchange="this.form.submit()">
+            <option value="">@Localizer["AllStatuses"]</option>
+            @foreach (var s in Enum.GetValues<TaskState>())
+            {
+                <option value="@s" selected="@(ViewBag.StatusFilter?.ToString() == s.ToString())">@s</option>
+            }
+        </select>
+    </div>
+    <div class="col-12 col-sm-6 col-md-3">
+        <select name="priorityFilter" class="form-select" onchange="this.form.submit()">
+            <option value="">@Localizer["AllPriorities"]</option>
+            @foreach (var p in Enum.GetValues<TaskPriority>())
+            {
+                <option value="@p" selected="@(ViewBag.PriorityFilter?.ToString() == p.ToString())">@p</option>
+            }
+        </select>
+    </div>
+    <div class="col-12 col-sm-6 col-md-3">
+        <select name="assigneeFilter" class="form-select" onchange="this.form.submit()">
+            <option value="">@Localizer["AllMembers"]</option>
+            @if (members != null)
+            {
+                foreach (var m in members)
+                {
+                    <option value="@m.Id" selected="@(ViewBag.AssigneeFilter?.ToString() == m.Id.ToString())">@m.DisplayName</option>
+                }
+            }
+        </select>
+    </div>
+    <div class="col-12 col-sm-6 col-md-3">
+        <a asp-action="Index" class="btn btn-outline-secondary w-100">@Localizer["ClearFilters"]</a>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <div class="text-center text-muted py-5">
+        <p class="fs-5">@Localizer["NoTasksMatchFilter"]</p>
+        <a asp-action="Create" class="btn btn-outline-primary">@Localizer["AddFirstTask"]</a>
+    </div>
+}
+else
+{
+    <div class="row g-3">
+        @foreach (var task in Model)
+        {
+            var borderClass = task.Priority switch
+            {
+                TaskPriority.Urgent => "border-danger",
+                TaskPriority.High => "border-warning",
+                _ => "border-light"
+            };
+
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card h-100 border-start border-4 @borderClass @(task.IsOverdue ? "bg-danger-subtle" : "")">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h5 class="card-title">@task.Title</h5>
+                            @if (task.IsOverdue)
+                            {
+                                <span class="badge bg-danger">@Localizer["OverdueBadge"]</span>
+                            }
+                        </div>
+                        @if (!string.IsNullOrEmpty(task.Description))
+                        {
+                            <p class="card-text text-muted small">@task.Description</p>
+                        }
+                        <p class="mb-1">
+                            <span class="badge bg-secondary">@task.Status</span>
+                            <span class="badge bg-info text-dark">@task.Priority</span>
+                        </p>
+                        @if (task.DueDate.HasValue)
+                        {
+                            <p class="small text-muted mb-1">@Localizer["DueDatePrefix"] @task.DueDate.Value.ToString("dd.MM.yyyy")</p>
+                        }
+                        @{
+                            var assignee = members?.FirstOrDefault(m => m.Id == task.AssigneeId);
+                        }
+                        @if (assignee != null)
+                        {
+                            <p class="small text-muted mb-1">👤 @assignee.DisplayName</p>
+                        }
+                        @if (task.SubTasks.Any())
+                        {
+                            <p class="small text-muted mb-1">
+                                @string.Format(Localizer["SubtasksDoneFormat"].Value, task.SubTasks.Count(s => s.IsDone), task.SubTasks.Count)
+                            </p>
+                        }
+                        @if (task.TaskTags.Any())
+                        {
+                            <p class="mb-0 mt-2">
+                                @foreach (var tt in task.TaskTags)
+                                {
+                                    <span class="badge bg-light text-dark border me-1">#@tt.Tag?.Name</span>
+                                }
+                            </p>
+                        }
+                    </div>
+                    <div class="card-footer bg-transparent d-flex gap-2">
+                        <a asp-action="Edit" asp-route-id="@task.Id" class="btn btn-sm btn-outline-secondary">@Localizer["EditButton"]</a>
+                        <a asp-action="Delete" asp-route-id="@task.Id" class="btn btn-sm btn-outline-danger">@Localizer["DeleteButton"]</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

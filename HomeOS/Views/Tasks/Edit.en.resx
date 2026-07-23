@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="PageTitle" xml:space="preserve">
+    <value>Edit Task</value>
+  </data>
+  <data name="TitleLabel" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="DescriptionLabel" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="DueDateLabel" xml:space="preserve">
+    <value>Due date</value>
+  </data>
+  <data name="PriorityLabel" xml:space="preserve">
+    <value>Priority</value>
+  </data>
+  <data name="StatusLabel" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="AssigneeLabel" xml:space="preserve">
+    <value>Assignee</value>
+  </data>
+  <data name="UnassignedOption" xml:space="preserve">
+    <value>— Unassigned —</value>
+  </data>
+  <data name="TagsLabel" xml:space="preserve">
+    <value>Tags (comma separated)</value>
+  </data>
+  <data name="SaveChangesButton" xml:space="preserve">
+    <value>Save changes</value>
+  </data>
+  <data name="BackButton" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="SubtasksHeading" xml:space="preserve">
+    <value>Subtasks</value>
+  </data>
+  <data name="NoSubtasks" xml:space="preserve">
+    <value>No subtasks yet.</value>
+  </data>
+  <data name="NewSubtaskPlaceholder" xml:space="preserve">
+    <value>New subtask...</value>
+  </data>
+  <data name="AddButton" xml:space="preserve">
+    <value>Add</value>
+  </data>
+</root>

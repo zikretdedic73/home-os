@@ -1,0 +1,91 @@
+@model HomeOS.Models.Tasks.TaskItem
+@using HomeOS.Models.Households
+@using HomeOS.Models.Tasks
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["PageTitle"];
+    var members = ViewBag.Members as List<Member>;
+    var tagsInput = ViewBag.TagsInput as string;
+}
+
+<h2>@Localizer["PageTitle"]</h2>
+
+<form asp-action="Edit" asp-route-id="@Model.Id" method="post" class="row g-3 mt-2">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="col-12">
+        <label class="form-label">@Localizer["TitleLabel"]</label>
+        <input asp-for="Title" class="form-control" required />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="col-12">
+        <label class="form-label">@Localizer["DescriptionLabel"]</label>
+        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+    </div>
+    <div class="col-12 col-md-4">
+        <label class="form-label">@Localizer["DueDateLabel"]</label>
+        <input asp-for="DueDate" type="date" class="form-control" />
+    </div>
+    <div class="col-12 col-md-4">
+        <label class="form-label">@Localizer["PriorityLabel"]</label>
+        <select asp-for="Priority" class="form-select" asp-items="Html.GetEnumSelectList<TaskPriority>()"></select>
+    </div>
+    <div class="col-12 col-md-4">
+        <label class="form-label">@Localizer["StatusLabel"]</label>
+        <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<TaskState>()"></select>
+    </div>
+    <div class="col-12 col-md-6">
+        <label class="form-label">@Localizer["AssigneeLabel"]</label>
+        <select asp-for="AssigneeId" class="form-select">
+            <option value="">@Localizer["UnassignedOption"]</option>
+            @if (members != null)
+            {
+                foreach (var m in members)
+                {
+                    <option value="@m.Id">@m.DisplayName</option>
+                }
+            }
+        </select>
+    </div>
+    <div class="col-12 col-md-6">
+        <label class="form-label">@Localizer["TagsLabel"]</label>
+        <input name="tagsInput" class="form-control" value="@tagsInput" />
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">@Localizer["SaveChangesButton"]</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">@Localizer["BackButton"]</a>
+    </div>
+</form>
+
+<hr class="my-4" />
+
+<h5>@Localizer["SubtasksHeading"]</h5>
+
+@if (Model.SubTasks.Any())
+{
+    <ul class="list-group mb-3">
+        @foreach (var st in Model.SubTasks.OrderBy(s => s.SortOrder))
+        {
+            <li class="list-group-item d-flex align-items-center gap-2">
+                <form asp-action="ToggleSubTask" method="post" class="d-flex align-items-center gap-2 mb-0">
+                    <input type="hidden" name="id" value="@st.Id" />
+                    <input type="hidden" name="taskItemId" value="@Model.Id" />
+                    <button type="submit" class="btn btn-sm @(st.IsDone ? "btn-success" : "btn-outline-secondary")">
+                        @(st.IsDone ? "✓" : "○")
+                    </button>
+                </form>
+                <span class="@(st.IsDone ? "text-decoration-line-through text-muted" : "")">@st.Title</span>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p class="text-muted">@Localizer["NoSubtasks"]</p>
+}
+
+<form asp-action="AddSubTask" method="post" class="d-flex gap-2">
+    <input type="hidden" name="taskItemId" value="@Model.Id" />
+    <input type="text" name="title" class="form-control" placeholder="@Localizer["NewSubtaskPlaceholder"]" required />
+    <button type="submit" class="btn btn-outline-primary">@Localizer["AddButton"]</button>
+</form>

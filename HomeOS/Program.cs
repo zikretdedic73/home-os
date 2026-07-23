@@ -1,4 +1,7 @@
 using HomeOS.Data;
+using HomeOS.Models.Calendar;
+using HomeOS.Models.Reminders;
+using HomeOS.Models.Tasks;
 using HomeOS.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
@@ -23,6 +26,14 @@ builder.Services.AddSingleton<IRecurrenceService, RecurrenceService>();
 builder.Services.Configure<ResendOptions>(builder.Configuration.GetSection("Resend"));
 builder.Services.AddHttpClient<IEmailSender, ResendEmailSender>();
 builder.Services.AddScoped<IReminderNotificationService, ReminderNotificationService>();
+
+// --- Search - every module registers its own ISearchable; the aggregating
+// SearchService (Docs/01_Roadmap.md, section 4.3) never needs to change when
+// a new one is added (Docs/00_Specifikacija_Izvor.md, "nova aplikacija je
+// automatski vidljiva u pretrazi"). ---
+builder.Services.AddScoped<ISearchable, TaskSearchProvider>();
+builder.Services.AddScoped<ISearchable, ReminderSearchProvider>();
+builder.Services.AddScoped<ISearchable, EventSearchProvider>();
 
 // --- Localization (Shell provides the mechanism, each module owns its own .resx -
 // see Docs/02_Pravila_Programiranja.md, section 5) ---

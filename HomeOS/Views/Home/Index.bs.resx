@@ -15,25 +15,7 @@
   <data name="PageTitle" xml:space="preserve">
     <value>Danas</value>
   </data>
-  <data name="TasksHeading" xml:space="preserve">
-    <value>Zadaci s rokom danas i kasni</value>
-  </data>
-  <data name="EventsHeading" xml:space="preserve">
-    <value>Današnji događaji</value>
-  </data>
-  <data name="RemindersHeading" xml:space="preserve">
-    <value>Aktivni podsjetnici</value>
-  </data>
-  <data name="NoTasksMessage" xml:space="preserve">
-    <value>Nema ničeg u zaostatku - mir i tišina.</value>
-  </data>
-  <data name="NoEventsMessage" xml:space="preserve">
-    <value>Nema događaja danas.</value>
-  </data>
-  <data name="NoRemindersMessage" xml:space="preserve">
-    <value>Nema aktivnih podsjetnika.</value>
-  </data>
-  <data name="OverdueBadge" xml:space="preserve">
-    <value>Kasni</value>
+  <data name="NoModulesMessage" xml:space="preserve">
+    <value>Nijedan modul nije uključen. Uključite ih na stranici Moduli.</value>
   </data>
 </root>

@@ -12,10 +12,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="PageTitle" xml:space="preserve">
-    <value>Today</value>
+  <data name="Heading" xml:space="preserve">
+    <value>Due &amp; overdue tasks</value>
   </data>
-  <data name="NoModulesMessage" xml:space="preserve">
-    <value>No modules are enabled. Turn some on under Modules.</value>
+  <data name="Empty" xml:space="preserve">
+    <value>Nothing due - enjoy the calm.</value>
+  </data>
+  <data name="OverdueBadge" xml:space="preserve">
+    <value>Overdue</value>
   </data>
 </root>

@@ -1,16 +1,11 @@
-using HomeOS.Models.Calendar;
-using HomeOS.Models.Reminders;
-using HomeOS.Models.Tasks;
+using HomeOS.Services;
 
 namespace HomeOS.Models.Home;
 
-// Aggregates across modules for the "Today" screen - the Shell reads other
-// modules' data directly (see Docs/00_Specifikacija_Izvor.md, "Gradite na
-// postojećem"). Finance/Life Admin sections are added once those modules
-// exist (Docs/01_Roadmap.md, Day 4).
+// The dashboard is a list of widgets contributed by enabled modules - the
+// Shell no longer hardcodes which module sections exist (see
+// Docs/00_Specifikacija_Izvor.md, "automatski vidljiva na komandnoj tabli").
 public class DashboardViewModel
 {
-    public List<TaskItem> DueOrOverdueTasks { get; set; } = new();
-    public List<Event> TodayEvents { get; set; } = new();
-    public List<Reminder> ActiveReminders { get; set; } = new();
+    public List<DashboardWidget> Widgets { get; set; } = new();
 }

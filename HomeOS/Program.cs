@@ -45,12 +45,15 @@ builder.Services.AddScoped<ISearchService, SearchService>();
 
 builder.Services.AddScoped<IModuleDescriptor, TasksModule>();
 builder.Services.AddScoped<ISearchable, TaskSearchProvider>();
+builder.Services.AddScoped<IDashboardContributor, TasksDashboardContributor>();
 
 builder.Services.AddScoped<IModuleDescriptor, CalendarModule>();
 builder.Services.AddScoped<ISearchable, EventSearchProvider>();
+builder.Services.AddScoped<IDashboardContributor, CalendarDashboardContributor>();
 
 builder.Services.AddScoped<IModuleDescriptor, RemindersModule>();
 builder.Services.AddScoped<ISearchable, ReminderSearchProvider>();
+builder.Services.AddScoped<IDashboardContributor, RemindersDashboardContributor>();
 
 // --- Localization (Shell provides the mechanism, each module owns its own .resx -
 // see Docs/02_Pravila_Programiranja.md, section 5) ---

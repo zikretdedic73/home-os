@@ -23,6 +23,8 @@ namespace HomeOS.Controllers
         private readonly IReminderNotificationService _reminders;
         private readonly IStringLocalizer<HomeController> _localizer;
         private readonly IEventBus _eventBus;
+        private readonly IModuleRegistry _moduleRegistry;
+        private readonly IEnumerable<IDashboardContributor> _dashboardContributors;
 
         public HomeController(
             ILogger<HomeController> logger,
@@ -30,7 +32,9 @@ namespace HomeOS.Controllers
             ICurrentHouseholdService household,
             IReminderNotificationService reminders,
             IStringLocalizer<HomeController> localizer,
-            IEventBus eventBus)
+            IEventBus eventBus,
+            IModuleRegistry moduleRegistry,
+            IEnumerable<IDashboardContributor> dashboardContributors)
         {
             _logger = logger;
             _context = context;
@@ -38,11 +42,14 @@ namespace HomeOS.Controllers
             _reminders = reminders;
             _localizer = localizer;
             _eventBus = eventBus;
+            _moduleRegistry = moduleRegistry;
+            _dashboardContributors = dashboardContributors;
         }
 
-        // "Today" dashboard - aggregates Tasks, Calendar and Reminders (the
-        // modules that exist so far). Finance/Life Admin sections are added
-        // once those modules exist (Docs/01_Roadmap.md, Day 4).
+        // "Today" dashboard - generated from every enabled module's dashboard
+        // contributor, so a new module automatically gets a section and a
+        // disabled one drops off (Docs/00_Specifikacija_Izvor.md, "automatski
+        // vidljiva na komandnoj tabli").
         [Authorize]
         public async Task<IActionResult> Index()
         {
@@ -53,29 +60,19 @@ namespace HomeOS.Controllers
             // simplification for this scope - see Docs/01_Roadmap.md, section 2.2.
             await _reminders.ProcessDueRemindersAsync(householdId);
 
-            var todayUtc = DateTime.UtcNow.Date;
-            var tomorrowUtc = todayUtc.AddDays(1);
+            var enabledKeys = (await _moduleRegistry.GetEnabledAsync(householdId))
+                .Select(m => m.Key)
+                .ToHashSet();
 
-            var dueOrOverdueTasks = await _context.Tasks
-                .Where(t => t.HouseholdId == householdId && !t.IsDeleted
-                    && t.Status != TaskState.Done
-                    && t.DueDate != null && t.DueDate < tomorrowUtc)
-                .OrderBy(t => t.DueDate)
-                .ToListAsync();
-
-            var todayEvents = await _context.Events
-                .Where(e => e.HouseholdId == householdId && !e.IsDeleted
-                    && e.StartsAtUtc < tomorrowUtc && e.EndsAtUtc >= todayUtc)
-                .OrderBy(e => e.StartsAtUtc)
-                .ToListAsync();
-
-            var activeReminders = await _reminders.GetActiveRemindersForMemberAsync(householdId, memberId);
+            var widgets = new List<DashboardWidget>();
+            foreach (var contributor in _dashboardContributors.Where(c => enabledKeys.Contains(c.ModuleKey)))
+            {
+                widgets.Add(await contributor.BuildAsync(householdId, memberId));
+            }
 
             var viewModel = new DashboardViewModel
             {
-                DueOrOverdueTasks = dueOrOverdueTasks,
-                TodayEvents = todayEvents,
-                ActiveReminders = activeReminders
+                Widgets = widgets.OrderBy(w => w.SortOrder).ToList()
             };
 
             return View(viewModel);

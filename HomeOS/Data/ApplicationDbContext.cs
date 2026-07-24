@@ -4,6 +4,7 @@ using HomeOS.Models.Kanban;
 using HomeOS.Models.Modules;
 using HomeOS.Models.Notes;
 using HomeOS.Models.Reminders;
+using HomeOS.Models.Shopping;
 using HomeOS.Models.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -38,6 +39,8 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     public DbSet<Card> Cards => Set<Card>();
     public DbSet<Note> Notes => Set<Note>();
     public DbSet<NoteTag> NoteTags => Set<NoteTag>();
+    public DbSet<ShoppingList> ShoppingLists => Set<ShoppingList>();
+    public DbSet<ShoppingListItem> ShoppingListItems => Set<ShoppingListItem>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -120,5 +123,10 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
             .HasForeignKey(nt => nt.TagId);
 
         builder.Entity<Note>().HasIndex(n => n.HouseholdId);
+
+        builder.Entity<ShoppingListItem>()
+            .HasOne(i => i.ShoppingList).WithMany(l => l.Items)
+            .HasForeignKey(i => i.ShoppingListId).OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<ShoppingList>().HasIndex(l => l.HouseholdId);
     }
 }

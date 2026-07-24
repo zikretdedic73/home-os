@@ -1,0 +1,45 @@
+@model List<HomeOS.Models.Shopping.ShoppingList>
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["PageTitle"];
+}
+
+<h2 class="mb-3">@Localizer["PageTitle"]</h2>
+
+<form asp-action="CreateList" method="post" class="row g-2 mb-4" style="max-width: 32rem;">
+    <div class="col">
+        <input type="text" name="name" class="form-control" placeholder="@Localizer["NewListPlaceholder"]" required />
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">@Localizer["CreateButton"]</button>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">@Localizer["NoLists"]</p>
+}
+else
+{
+    <div class="row g-3">
+        @foreach (var list in Model)
+        {
+            var bought = list.Items.Count(i => i.IsChecked);
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">🛒 @list.Name</h5>
+                        <p class="small text-muted mb-0">@string.Format(Localizer["ItemsCountFormat"].Value, bought, list.Items.Count)</p>
+                    </div>
+                    <div class="card-footer bg-transparent d-flex gap-2">
+                        <a asp-action="List" asp-route-id="@list.Id" class="btn btn-sm btn-primary">@Localizer["OpenButton"]</a>
+                        <form asp-action="DeleteList" method="post" class="mb-0">
+                            <input type="hidden" name="id" value="@list.Id" />
+                            <button type="submit" class="btn btn-sm btn-outline-danger">@Localizer["DeleteButton"]</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

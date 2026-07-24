@@ -1,0 +1,82 @@
+@model HomeOS.Models.Shopping.ShoppingList
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<a asp-action="Index" class="text-decoration-none small">@Localizer["BackToLists"]</a>
+<h2 class="mb-3">🛒 @Model.Name</h2>
+
+<form asp-action="AddItem" method="post" class="row g-2 mb-4" style="max-width: 40rem;">
+    <input type="hidden" name="listId" value="@Model.Id" />
+    <div class="col">
+        <input type="text" name="name" class="form-control" placeholder="@Localizer["ItemNamePlaceholder"]" required />
+    </div>
+    <div class="col-4 col-sm-3">
+        <input type="text" name="quantity" class="form-control" placeholder="@Localizer["QuantityPlaceholder"]" />
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">@Localizer["AddButton"]</button>
+    </div>
+</form>
+
+@Html.AntiForgeryToken()
+
+@if (!Model.Items.Any())
+{
+    <p class="text-muted">@Localizer["NoItems"]</p>
+}
+else
+{
+    <ul class="list-group" style="max-width: 40rem;">
+        @foreach (var item in Model.Items)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center shopping-item" data-item-id="@item.Id">
+                <div class="form-check d-flex align-items-center gap-2 mb-0">
+                    <input class="form-check-input shopping-check" type="checkbox" id="item-@item.Id" @(item.IsChecked ? "checked" : "") />
+                    <label class="form-check-label shopping-label @(item.IsChecked ? "text-decoration-line-through text-muted" : "")" for="item-@item.Id">
+                        @item.Name
+                        @if (!string.IsNullOrEmpty(item.Quantity))
+                        {
+                            <span class="text-muted small">— @item.Quantity</span>
+                        }
+                    </label>
+                </div>
+                <form asp-action="RemoveItem" method="post" class="mb-0">
+                    <input type="hidden" name="itemId" value="@item.Id" />
+                    <input type="hidden" name="listId" value="@Model.Id" />
+                    <button type="submit" class="btn btn-sm btn-link text-danger p-0" title="@Localizer["RemoveTitle"]">✕</button>
+                </form>
+            </li>
+        }
+    </ul>
+}
+
+@section Scripts {
+    <script>
+        (function () {
+            var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+            var url = '@Url.Action("ToggleItem")';
+            document.querySelectorAll('.shopping-check').forEach(function (cb) {
+                cb.addEventListener('change', function () {
+                    var li = cb.closest('.shopping-item');
+                    var itemId = li.getAttribute('data-item-id');
+                    var body = new URLSearchParams();
+                    body.append('itemId', itemId);
+                    body.append('__RequestVerificationToken', token);
+                    fetch(url, { method: 'POST', body: body })
+                        .then(function (r) { return r.json(); })
+                        .then(function (d) {
+                            if (d.success) {
+                                li.querySelector('.shopping-label').classList.toggle('text-decoration-line-through', d.isChecked);
+                                li.querySelector('.shopping-label').classList.toggle('text-muted', d.isChecked);
+                            } else {
+                                cb.checked = !cb.checked;
+                            }
+                        })
+                        .catch(function () { cb.checked = !cb.checked; });
+                });
+            });
+        })();
+    </script>
+}

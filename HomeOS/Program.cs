@@ -4,6 +4,7 @@ using HomeOS.Models.Events;
 using HomeOS.Models.Kanban;
 using HomeOS.Models.Notes;
 using HomeOS.Models.Reminders;
+using HomeOS.Models.Shopping;
 using HomeOS.Models.Tasks;
 using HomeOS.Services;
 using HomeOS.Services.Events;
@@ -65,6 +66,9 @@ builder.Services.AddScoped<ISearchable, BoardSearchProvider>();
 builder.Services.AddScoped<IModuleDescriptor, NotesModule>();
 builder.Services.AddScoped<ISearchable, NoteSearchProvider>();
 builder.Services.AddScoped<IDashboardContributor, NotesDashboardContributor>();
+
+builder.Services.AddScoped<IModuleDescriptor, ShoppingListsModule>();
+builder.Services.AddScoped<ISearchable, ShoppingListSearchProvider>();
 
 // --- Localization (Shell provides the mechanism, each module owns its own .resx -
 // see Docs/02_Pravila_Programiranja.md, section 5) ---

@@ -1,0 +1,15 @@
+@model HomeOS.Models.Notes.Note
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["PageTitle"];
+    var title = string.IsNullOrEmpty(Model.Title) ? Model.JournalDate?.ToString("dd.MM.yyyy") : Model.Title;
+}
+
+<h2>@Localizer["PageTitle"]</h2>
+<p>@Localizer["ConfirmMessage"] <strong>@title</strong></p>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">@Localizer["ConfirmButton"]</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">@Localizer["CancelButton"]</a>
+</form>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="PageTitle" xml:space="preserve">
+    <value>Izmjena bilješke</value>
+  </data>
+  <data name="TitleLabel" xml:space="preserve">
+    <value>Naslov (opciono)</value>
+  </data>
+  <data name="ContentLabel" xml:space="preserve">
+    <value>Sadržaj</value>
+  </data>
+  <data name="TagsLabel" xml:space="preserve">
+    <value>Tagovi (odvojeni zarezom)</value>
+  </data>
+  <data name="LinkLabel" xml:space="preserve">
+    <value>Poveži sa</value>
+  </data>
+  <data name="LinkNone" xml:space="preserve">
+    <value>— Bez veze —</value>
+  </data>
+  <data name="LinkTasksGroup" xml:space="preserve">
+    <value>Zadaci</value>
+  </data>
+  <data name="LinkEventsGroup" xml:space="preserve">
+    <value>Događaji</value>
+  </data>
+  <data name="SaveChangesButton" xml:space="preserve">
+    <value>Sačuvaj izmjene</value>
+  </data>
+  <data name="BackButton" xml:space="preserve">
+    <value>Nazad</value>
+  </data>
+  <data name="JournalNote" xml:space="preserve">
+    <value>Zapis u dnevniku za {0}</value>
+  </data>
+</root>

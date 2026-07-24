@@ -1,0 +1,63 @@
+@model HomeOS.Models.Notes.Note
+@using HomeOS.Models.Common
+@using HomeOS.Models.Tasks
+@using HomeOS.Models.Calendar
+@using Microsoft.AspNetCore.Mvc.Rendering
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@inject Microsoft.Extensions.Localization.IStringLocalizer<VisibilityLabels> VisLoc
+@{
+    ViewData["Title"] = Localizer["PageTitle"];
+    var tasks = ViewBag.LinkableTasks as List<TaskItem> ?? new List<TaskItem>();
+    var events = ViewBag.LinkableEvents as List<Event> ?? new List<Event>();
+    var visibilityOptions = new List<SelectListItem>
+    {
+        new(VisLoc["Household"].Value, "Household"),
+        new(VisLoc["Private"].Value, "Private")
+    };
+}
+
+<h2>@Localizer["PageTitle"]</h2>
+
+<form asp-action="Create" method="post" class="row g-3 mt-2">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="col-12">
+        <label class="form-label">@Localizer["TitleLabel"]</label>
+        <input asp-for="Title" class="form-control" />
+    </div>
+    <div class="col-12">
+        <label class="form-label">@Localizer["ContentLabel"]</label>
+        <textarea asp-for="Content" class="form-control" rows="6" required></textarea>
+        <span asp-validation-for="Content" class="text-danger"></span>
+    </div>
+    <div class="col-12 col-md-6">
+        <label class="form-label">@Localizer["TagsLabel"]</label>
+        <input name="tagsInput" class="form-control" />
+    </div>
+    <div class="col-12 col-md-6">
+        <label class="form-label">@VisLoc["Label"]</label>
+        <select asp-for="Visibility" class="form-select" asp-items="visibilityOptions"></select>
+    </div>
+    <div class="col-12">
+        <label class="form-label">@Localizer["LinkLabel"]</label>
+        <select name="linkSelection" class="form-select">
+            <option value="">@Localizer["LinkNone"]</option>
+            <optgroup label="@Localizer["LinkTasksGroup"]">
+                @foreach (var t in tasks)
+                {
+                    <option value="Task:@t.Id">@t.Title</option>
+                }
+            </optgroup>
+            <optgroup label="@Localizer["LinkEventsGroup"]">
+                @foreach (var e in events)
+                {
+                    <option value="Event:@e.Id">@e.Title</option>
+                }
+            </optgroup>
+        </select>
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">@Localizer["SaveButton"]</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">@Localizer["CancelButton"]</a>
+    </div>
+</form>

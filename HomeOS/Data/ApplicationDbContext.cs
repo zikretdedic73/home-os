@@ -2,6 +2,7 @@ using HomeOS.Models.Calendar;
 using HomeOS.Models.Households;
 using HomeOS.Models.Kanban;
 using HomeOS.Models.Modules;
+using HomeOS.Models.Notes;
 using HomeOS.Models.Reminders;
 using HomeOS.Models.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -35,6 +36,8 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     public DbSet<Board> Boards => Set<Board>();
     public DbSet<Column> Columns => Set<Column>();
     public DbSet<Card> Cards => Set<Card>();
+    public DbSet<Note> Notes => Set<Note>();
+    public DbSet<NoteTag> NoteTags => Set<NoteTag>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -106,5 +109,16 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
             .HasForeignKey(c => c.TaskItemId).OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<Board>().HasIndex(b => b.HouseholdId);
+
+        // NoteTag is a many-to-many join reusing the shared Tag entity
+        builder.Entity<NoteTag>().HasKey(nt => new { nt.NoteId, nt.TagId });
+        builder.Entity<NoteTag>()
+            .HasOne(nt => nt.Note).WithMany(n => n.NoteTags)
+            .HasForeignKey(nt => nt.NoteId).OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<NoteTag>()
+            .HasOne(nt => nt.Tag).WithMany()
+            .HasForeignKey(nt => nt.TagId);
+
+        builder.Entity<Note>().HasIndex(n => n.HouseholdId);
     }
 }

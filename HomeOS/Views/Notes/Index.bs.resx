@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="PageTitle" xml:space="preserve">
+    <value>Bilješke</value>
+  </data>
+  <data name="NewNoteButton" xml:space="preserve">
+    <value>Nova bilješka</value>
+  </data>
+  <data name="JournalButton" xml:space="preserve">
+    <value>Današnji dnevnik</value>
+  </data>
+  <data name="NoNotes" xml:space="preserve">
+    <value>Još nema bilješki.</value>
+  </data>
+  <data name="JournalBadge" xml:space="preserve">
+    <value>Dnevnik</value>
+  </data>
+  <data name="EditButton" xml:space="preserve">
+    <value>Izmijeni</value>
+  </data>
+  <data name="DeleteButton" xml:space="preserve">
+    <value>Obriši</value>
+  </data>
+  <data name="LinkedTaskLabel" xml:space="preserve">
+    <value>🔗 Povezan zadatak</value>
+  </data>
+  <data name="LinkedEventLabel" xml:space="preserve">
+    <value>🔗 Povezan događaj</value>
+  </data>
+</root>

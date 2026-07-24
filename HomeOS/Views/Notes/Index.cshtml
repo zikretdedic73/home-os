@@ -1,0 +1,67 @@
+@model List<HomeOS.Models.Notes.Note>
+@using HomeOS.Models.Notes
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["PageTitle"];
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <h2 class="mb-0">@Localizer["PageTitle"]</h2>
+    <div class="d-flex gap-2">
+        <a asp-action="Journal" class="btn btn-outline-primary">📖 @Localizer["JournalButton"]</a>
+        <a asp-action="Create" class="btn btn-primary">➕ @Localizer["NewNoteButton"]</a>
+    </div>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">@TempData["Success"]</div>
+}
+
+@if (!Model.Any())
+{
+    <p class="text-muted">@Localizer["NoNotes"]</p>
+}
+else
+{
+    <div class="row g-3">
+        @foreach (var note in Model)
+        {
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h5 class="card-title">@(string.IsNullOrEmpty(note.Title) ? note.JournalDate?.ToString("dd.MM.yyyy") : note.Title)</h5>
+                            @if (note.IsJournalEntry)
+                            {
+                                <span class="badge bg-info text-dark">@Localizer["JournalBadge"]</span>
+                            }
+                        </div>
+                        <p class="card-text small text-muted">@(note.Content.Length > 140 ? note.Content[..140] + "…" : note.Content)</p>
+                        @if (note.LinkType == NoteLinkType.Task && note.LinkedEntityId != null)
+                        {
+                            <a asp-controller="Tasks" asp-action="Edit" asp-route-id="@note.LinkedEntityId" class="small">@Localizer["LinkedTaskLabel"]</a>
+                        }
+                        else if (note.LinkType == NoteLinkType.Event && note.LinkedEntityId != null)
+                        {
+                            <a asp-controller="Calendar" asp-action="Edit" asp-route-id="@note.LinkedEntityId" class="small">@Localizer["LinkedEventLabel"]</a>
+                        }
+                        @if (note.NoteTags.Any())
+                        {
+                            <p class="mb-0 mt-2">
+                                @foreach (var nt in note.NoteTags)
+                                {
+                                    <span class="badge bg-light text-dark border me-1">#@nt.Tag?.Name</span>
+                                }
+                            </p>
+                        }
+                    </div>
+                    <div class="card-footer bg-transparent d-flex gap-2">
+                        <a asp-action="Edit" asp-route-id="@note.Id" class="btn btn-sm btn-outline-secondary">@Localizer["EditButton"]</a>
+                        <a asp-action="Delete" asp-route-id="@note.Id" class="btn btn-sm btn-outline-danger">@Localizer["DeleteButton"]</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

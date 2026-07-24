@@ -1,10 +1,12 @@
 using System.Diagnostics;
 using HomeOS.Data;
 using HomeOS.Models;
+using HomeOS.Models.Events;
 using HomeOS.Models.Home;
 using HomeOS.Models.Reminders;
 using HomeOS.Models.Tasks;
 using HomeOS.Services;
+using HomeOS.Services.Events;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,19 +22,22 @@ namespace HomeOS.Controllers
         private readonly ICurrentHouseholdService _household;
         private readonly IReminderNotificationService _reminders;
         private readonly IStringLocalizer<HomeController> _localizer;
+        private readonly IEventBus _eventBus;
 
         public HomeController(
             ILogger<HomeController> logger,
             ApplicationDbContext context,
             ICurrentHouseholdService household,
             IReminderNotificationService reminders,
-            IStringLocalizer<HomeController> localizer)
+            IStringLocalizer<HomeController> localizer,
+            IEventBus eventBus)
         {
             _logger = logger;
             _context = context;
             _household = household;
             _reminders = reminders;
             _localizer = localizer;
+            _eventBus = eventBus;
         }
 
         // "Today" dashboard - aggregates Tasks, Calendar and Reminders (the
@@ -121,19 +126,28 @@ namespace HomeOS.Controllers
                     _context.Reminders.Add(reminder);
                     await _context.SaveChangesAsync();
                     _context.ReminderRecipients.Add(new ReminderRecipient { ReminderId = reminder.Id, MemberId = memberId });
+                    await _context.SaveChangesAsync();
                 }
                 else
                 {
-                    _context.Tasks.Add(new TaskItem
+                    var task = new TaskItem
                     {
                         HouseholdId = householdId,
                         OwnerId = memberId,
                         Title = title.Trim(),
                         DueDate = when
-                    });
+                    };
+                    _context.Tasks.Add(task);
+                    await _context.SaveChangesAsync();
+
+                    // Same "key moment" as Tasks/Create - Reminders reacts.
+                    if (task.DueDate.HasValue)
+                    {
+                        await _eventBus.PublishAsync(new TaskWithDueDateCreatedEvent(
+                            householdId, task.Id, memberId, task.Title, task.DueDate.Value));
+                    }
                 }
 
-                await _context.SaveChangesAsync();
                 TempData["Success"] = _localizer["QuickCaptureSuccessMessage"].Value;
             }
 

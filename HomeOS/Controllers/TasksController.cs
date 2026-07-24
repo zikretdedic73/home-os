@@ -1,7 +1,9 @@
 using HomeOS.Data;
+using HomeOS.Models.Events;
 using HomeOS.Models.Households;
 using HomeOS.Models.Tasks;
 using HomeOS.Services;
+using HomeOS.Services.Events;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
@@ -15,12 +17,14 @@ public class TasksController : Controller
     private readonly ApplicationDbContext _context;
     private readonly ICurrentHouseholdService _household;
     private readonly IStringLocalizer<TasksController> _localizer;
+    private readonly IEventBus _eventBus;
 
-    public TasksController(ApplicationDbContext context, ICurrentHouseholdService household, IStringLocalizer<TasksController> localizer)
+    public TasksController(ApplicationDbContext context, ICurrentHouseholdService household, IStringLocalizer<TasksController> localizer, IEventBus eventBus)
     {
         _context = context;
         _household = household;
         _localizer = localizer;
+        _eventBus = eventBus;
     }
 
     // GET: /Tasks
@@ -89,6 +93,14 @@ public class TasksController : Controller
         await _context.SaveChangesAsync();
 
         await SaveTagsAsync(model, tagsInput, householdId);
+
+        // Publish a "key moment" - the Reminders module reacts (auto-creates a
+        // reminder at the due date) without Tasks calling it directly.
+        if (model.DueDate.HasValue)
+        {
+            await _eventBus.PublishAsync(new TaskWithDueDateCreatedEvent(
+                householdId, model.Id, model.OwnerId, model.Title, model.DueDate.Value));
+        }
 
         TempData["Success"] = _localizer["TaskCreatedSuccessMessage"].Value;
         return RedirectToAction(nameof(Index));

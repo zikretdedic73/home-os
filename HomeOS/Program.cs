@@ -1,8 +1,10 @@
 using HomeOS.Data;
 using HomeOS.Models.Calendar;
+using HomeOS.Models.Events;
 using HomeOS.Models.Reminders;
 using HomeOS.Models.Tasks;
 using HomeOS.Services;
+using HomeOS.Services.Events;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +28,12 @@ builder.Services.AddSingleton<IRecurrenceService, RecurrenceService>();
 builder.Services.Configure<ResendOptions>(builder.Configuration.GetSection("Resend"));
 builder.Services.AddHttpClient<IEmailSender, ResendEmailSender>();
 builder.Services.AddScoped<IReminderNotificationService, ReminderNotificationService>();
+
+// --- Event bus - modules publish "key moments" and others react, without
+// direct dependency (Docs/00_Specifikacija_Izvor.md, "Kooperacija bez direktne
+// zavisnosti"). Each subscription is one AddScoped<IEventHandler<T>, ...> line. ---
+builder.Services.AddScoped<IEventBus, InProcessEventBus>();
+builder.Services.AddScoped<IEventHandler<TaskWithDueDateCreatedEvent>, TaskWithDueDateCreatedHandler>();
 
 // --- Module registry - each module registers a descriptor (nav/search/module
 // manager are generated from these, never hardcoded) and its ISearchable

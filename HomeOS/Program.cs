@@ -42,6 +42,7 @@ builder.Services.AddScoped<IEventHandler<TaskWithDueDateCreatedEvent>, TaskWithD
 // građani"; Docs/02_Pravila_Programiranja.md, sections 1.2 & 1.4). ---
 builder.Services.AddScoped<IModuleRegistry, ModuleRegistry>();
 builder.Services.AddScoped<ISearchService, SearchService>();
+builder.Services.AddScoped<IPermissionService, PermissionService>();
 
 builder.Services.AddScoped<IModuleDescriptor, TasksModule>();
 builder.Services.AddScoped<ISearchable, TaskSearchProvider>();

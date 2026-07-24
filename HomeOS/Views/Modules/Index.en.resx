@@ -30,4 +30,19 @@
   <data name="DisableButton" xml:space="preserve">
     <value>Disable</value>
   </data>
+  <data name="PermissionsHeading" xml:space="preserve">
+    <value>Permissions</value>
+  </data>
+  <data name="GrantedBadge" xml:space="preserve">
+    <value>Granted</value>
+  </data>
+  <data name="RevokedBadge" xml:space="preserve">
+    <value>Revoked</value>
+  </data>
+  <data name="GrantButton" xml:space="preserve">
+    <value>Grant</value>
+  </data>
+  <data name="RevokeButton" xml:space="preserve">
+    <value>Revoke</value>
+  </data>
 </root>

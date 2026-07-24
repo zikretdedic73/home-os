@@ -15,4 +15,7 @@
   <data name="ModuleStateUpdatedMessage" xml:space="preserve">
     <value>Module updated.</value>
   </data>
+  <data name="PermissionUpdatedMessage" xml:space="preserve">
+    <value>Permission updated.</value>
+  </data>
 </root>

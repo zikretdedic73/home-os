@@ -15,12 +15,14 @@ public class CalendarController : Controller
     private readonly ApplicationDbContext _context;
     private readonly ICurrentHouseholdService _household;
     private readonly IStringLocalizer<CalendarController> _localizer;
+    private readonly IPermissionService _permissions;
 
-    public CalendarController(ApplicationDbContext context, ICurrentHouseholdService household, IStringLocalizer<CalendarController> localizer)
+    public CalendarController(ApplicationDbContext context, ICurrentHouseholdService household, IStringLocalizer<CalendarController> localizer, IPermissionService permissions)
     {
         _context = context;
         _household = household;
         _localizer = localizer;
+        _permissions = permissions;
     }
 
     // GET: /Calendar
@@ -47,6 +49,15 @@ public class CalendarController : Controller
                 color = "#2f6f63"
             })
             .ToListAsync();
+
+        // Projecting task deadlines means reading another module's data - only
+        // do it if the household still grants Calendar that permission
+        // (Docs/00_Specifikacija_Izvor.md, "Kontrola i privatnost domaćinstva").
+        var canReadTasks = await _permissions.HasPermissionAsync(
+            householdId, CalendarModule.Key_Static, CalendarModule.TasksReadPermission);
+
+        if (!canReadTasks)
+            return Json(events.Cast<object>());
 
         var tasks = await _context.Tasks
             .Where(t => t.HouseholdId == householdId && !t.IsDeleted

@@ -15,4 +15,7 @@
   <data name="NavLabel" xml:space="preserve">
     <value>Kalendar</value>
   </data>
+  <data name="Perm_TasksRead" xml:space="preserve">
+    <value>Čitanje zadataka (za prikaz rokova na kalendaru)</value>
+  </data>
 </root>

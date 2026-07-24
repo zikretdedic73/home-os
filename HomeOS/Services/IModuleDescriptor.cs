@@ -1,5 +1,11 @@
 namespace HomeOS.Services;
 
+// A data-access permission a module requests from the household (e.g. Calendar
+// requesting to read Tasks). Key is stable; DisplayName is localized by the
+// requesting module. See Docs/00_Specifikacija_Izvor.md, "Kontrola i
+// privatnost domaćinstva".
+public record ModulePermission(string Key, string DisplayName);
+
 // Every installable module describes itself through this contract and
 // registers itself in DI - the Shell never hardcodes a list of modules
 // (see Docs/00_Specifikacija_Izvor.md, "Nove aplikacije su ravnopravni
@@ -26,4 +32,10 @@ public interface IModuleDescriptor
     // the Shell never holds module display text (Docs/02_Pravila_Programiranja.md,
     // section 5).
     string DisplayName { get; }
+
+    // Cross-module data-access permissions this module requests. Most modules
+    // only use their own data and request none; the household reviews and can
+    // revoke any granted permission (Docs/00_Specifikacija_Izvor.md, section
+    // "Kontrola i privatnost domaćinstva").
+    IReadOnlyList<ModulePermission> RequestedPermissions => Array.Empty<ModulePermission>();
 }

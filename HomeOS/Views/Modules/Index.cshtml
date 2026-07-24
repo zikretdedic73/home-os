@@ -1,8 +1,7 @@
-@model IReadOnlyList<HomeOS.Services.ModuleInfo>
+@model HomeOS.Models.Modules.ModuleManagementViewModel
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @{
     ViewData["Title"] = Localizer["PageTitle"];
-    var returnUrl = Context.Request.Path + Context.Request.QueryString;
 }
 
 <h2 class="mb-2">@Localizer["PageTitle"]</h2>
@@ -14,30 +13,62 @@
 }
 
 <div class="row g-3">
-    @foreach (var module in Model)
+    @foreach (var module in Model.Modules)
     {
         <div class="col-12 col-md-6 col-lg-4">
             <div class="card h-100 @(module.IsEnabled ? "" : "opacity-75")">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                        <div class="fs-4">@module.Descriptor.Icon</div>
-                        <h5 class="card-title mb-1">@module.Descriptor.DisplayName</h5>
-                        @if (module.IsEnabled)
-                        {
-                            <span class="badge bg-success">@Localizer["EnabledBadge"]</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-secondary">@Localizer["DisabledBadge"]</span>
-                        }
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="fs-4">@module.Descriptor.Icon</div>
+                            <h5 class="card-title mb-1">@module.Descriptor.DisplayName</h5>
+                            @if (module.IsEnabled)
+                            {
+                                <span class="badge bg-success">@Localizer["EnabledBadge"]</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">@Localizer["DisabledBadge"]</span>
+                            }
+                        </div>
+                        <form asp-action="Toggle" method="post" class="mb-0">
+                            <input type="hidden" name="key" value="@module.Descriptor.Key" />
+                            <input type="hidden" name="enabled" value="@((!module.IsEnabled).ToString().ToLowerInvariant())" />
+                            <button type="submit" class="btn btn-sm @(module.IsEnabled ? "btn-outline-danger" : "btn-outline-success")">
+                                @(module.IsEnabled ? Localizer["DisableButton"] : Localizer["EnableButton"])
+                            </button>
+                        </form>
                     </div>
-                    <form asp-action="Toggle" method="post" class="mb-0">
-                        <input type="hidden" name="key" value="@module.Descriptor.Key" />
-                        <input type="hidden" name="enabled" value="@((!module.IsEnabled).ToString().ToLowerInvariant())" />
-                        <button type="submit" class="btn btn-sm @(module.IsEnabled ? "btn-outline-danger" : "btn-outline-success")">
-                            @(module.IsEnabled ? Localizer["DisableButton"] : Localizer["EnableButton"])
-                        </button>
-                    </form>
+
+                    @if (module.Permissions.Any())
+                    {
+                        <hr class="my-3" />
+                        <h6 class="text-muted small text-uppercase">@Localizer["PermissionsHeading"]</h6>
+                        @foreach (var perm in module.Permissions)
+                        {
+                            <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
+                                <div class="small">
+                                    @perm.DisplayName
+                                    @if (perm.IsGranted)
+                                    {
+                                        <span class="badge bg-success ms-1">@Localizer["GrantedBadge"]</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary ms-1">@Localizer["RevokedBadge"]</span>
+                                    }
+                                </div>
+                                <form asp-action="TogglePermission" method="post" class="mb-0">
+                                    <input type="hidden" name="key" value="@module.Descriptor.Key" />
+                                    <input type="hidden" name="permission" value="@perm.Key" />
+                                    <input type="hidden" name="granted" value="@((!perm.IsGranted).ToString().ToLowerInvariant())" />
+                                    <button type="submit" class="btn btn-sm @(perm.IsGranted ? "btn-outline-danger" : "btn-outline-success")">
+                                        @(perm.IsGranted ? Localizer["RevokeButton"] : Localizer["GrantButton"])
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                    }
                 </div>
             </div>
         </div>

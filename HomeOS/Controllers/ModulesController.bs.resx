@@ -15,4 +15,7 @@
   <data name="ModuleStateUpdatedMessage" xml:space="preserve">
     <value>Modul je ažuriran.</value>
   </data>
+  <data name="PermissionUpdatedMessage" xml:space="preserve">
+    <value>Dozvola je ažurirana.</value>
+  </data>
 </root>

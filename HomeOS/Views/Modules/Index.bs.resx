@@ -30,4 +30,19 @@
   <data name="DisableButton" xml:space="preserve">
     <value>Isključi</value>
   </data>
+  <data name="PermissionsHeading" xml:space="preserve">
+    <value>Dozvole</value>
+  </data>
+  <data name="GrantedBadge" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="RevokedBadge" xml:space="preserve">
+    <value>Opozvana</value>
+  </data>
+  <data name="GrantButton" xml:space="preserve">
+    <value>Daj</value>
+  </data>
+  <data name="RevokeButton" xml:space="preserve">
+    <value>Opozovi</value>
+  </data>
 </root>

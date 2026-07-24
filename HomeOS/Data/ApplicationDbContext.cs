@@ -29,6 +29,7 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     public DbSet<Event> Events => Set<Event>();
     public DbSet<EventAttendee> EventAttendees => Set<EventAttendee>();
     public DbSet<ModuleState> ModuleStates => Set<ModuleState>();
+    public DbSet<ModulePermissionState> ModulePermissionStates => Set<ModulePermissionState>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -80,5 +81,7 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
 
         // One state row per (household, module); look-ups filter by household.
         builder.Entity<ModuleState>().HasIndex(s => new { s.HouseholdId, s.ModuleKey }).IsUnique();
+        builder.Entity<ModulePermissionState>()
+            .HasIndex(p => new { p.HouseholdId, p.ModuleKey, p.Permission }).IsUnique();
     }
 }

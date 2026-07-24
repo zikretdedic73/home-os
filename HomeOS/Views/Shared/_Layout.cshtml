@@ -130,6 +130,36 @@
                 </div>
             </div>
         </div>
+
+        @* Command palette (Ctrl+K) - jump to any enabled module or run a search.
+           Targets are generated from the same module registry as the navbar. *@
+        <div class="modal fade" id="commandPalette" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">@Localizer["CommandPaletteTitle"]</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" id="commandPaletteInput" class="form-control mb-2" placeholder="@Localizer["CommandPalettePlaceholder"]" autocomplete="off" />
+                        <ul id="commandPaletteResults" class="list-group"></ul>
+                        <div class="form-text mt-2">@Localizer["CommandPaletteHint"]</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="application/json" id="commandPaletteData">
+            @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                new[] { new { name = Localizer["DashboardNavLink"].Value, url = Url.Action("Index", "Home"), icon = "🏠" } }
+                    .Concat(navModules.Select(m => new { name = m.DisplayName, url = Url.Action("Index", m.Controller), icon = m.Icon }))))
+        </script>
+        <script>
+            window.homeOsCommandPalette = {
+                searchPrefix: '@Localizer["CommandPaletteSearchPrefix"]',
+                searchUrl: '@Url.Action("Index", "Search")'
+            };
+        </script>
     }
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

@@ -24,6 +24,18 @@
   <data name="ModulesLink" xml:space="preserve">
     <value>Modules</value>
   </data>
+  <data name="CommandPaletteTitle" xml:space="preserve">
+    <value>Command palette</value>
+  </data>
+  <data name="CommandPalettePlaceholder" xml:space="preserve">
+    <value>Jump to a module or search...</value>
+  </data>
+  <data name="CommandPaletteSearchPrefix" xml:space="preserve">
+    <value>Search for</value>
+  </data>
+  <data name="CommandPaletteHint" xml:space="preserve">
+    <value>Tip: press Ctrl+K to open this from anywhere.</value>
+  </data>
   <data name="QuickCaptureButton" xml:space="preserve">
     <value>Quick capture</value>
   </data>

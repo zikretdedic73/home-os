@@ -24,6 +24,18 @@
   <data name="ModulesLink" xml:space="preserve">
     <value>Moduli</value>
   </data>
+  <data name="CommandPaletteTitle" xml:space="preserve">
+    <value>Komandna paleta</value>
+  </data>
+  <data name="CommandPalettePlaceholder" xml:space="preserve">
+    <value>Skoči na modul ili pretraži...</value>
+  </data>
+  <data name="CommandPaletteSearchPrefix" xml:space="preserve">
+    <value>Pretraži</value>
+  </data>
+  <data name="CommandPaletteHint" xml:space="preserve">
+    <value>Savjet: pritisnite Ctrl+K da otvorite ovo bilo gdje.</value>
+  </data>
   <data name="QuickCaptureButton" xml:space="preserve">
     <value>Brzi unos</value>
   </data>

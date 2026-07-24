@@ -4,16 +4,25 @@
 @inject IStringLocalizer<SharedLayout> Localizer
 @inject ICurrentHouseholdService Household
 @inject IReminderNotificationService Reminders
+@inject IModuleRegistry ModuleRegistry
 @{
     var currentCulture = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
     var returnUrl = Context.Request.Path + Context.Request.QueryString;
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var searchQuery = Context.Request.Query["q"].ToString();
 
     var activeReminderCount = 0;
+    IReadOnlyList<IModuleDescriptor> navModules = new List<IModuleDescriptor>();
     if (User.Identity?.IsAuthenticated == true)
     {
         var currentHouseholdId = await Household.GetCurrentHouseholdIdAsync();
         var currentMemberId = await Household.GetCurrentMemberIdAsync();
         activeReminderCount = (await Reminders.GetActiveRemindersForMemberAsync(currentHouseholdId, currentMemberId)).Count;
+
+        // Navigation is generated from the module registry, never hardcoded -
+        // a new module appears here automatically, a disabled one disappears
+        // (Docs/00_Specifikacija_Izvor.md, "automatski vidljiva u navigaciji").
+        navModules = await ModuleRegistry.GetEnabledAsync(currentHouseholdId);
     }
 }
 <!DOCTYPE html>
@@ -35,19 +44,25 @@
                 </button>
                 <div class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">@Localizer["DashboardNavLink"]</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Tasks" asp-action="Index">@Localizer["TasksNavLink"]</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Kanban" asp-action="Index">@Localizer["KanbanNavLink"]</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Calendar" asp-action="Index">@Localizer["CalendarNavLink"]</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Reminders" asp-action="Index">@Localizer["RemindersNavLink"]</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Notes" asp-action="Index">@Localizer["NotesNavLink"]</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Finance" asp-action="Index">@Localizer["FinanceNavLink"]</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="LifeAdmin" asp-action="Index">@Localizer["LifeAdminNavLink"]</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="ShoppingLists" asp-action="Index">@Localizer["ShoppingListsNavLink"]</a></li>
-                    </ul>
-                    <div class="d-flex align-items-center gap-2">
                         @if (User.Identity?.IsAuthenticated == true)
                         {
+                            <li class="nav-item">
+                                <a class="nav-link @(currentController == "Home" ? "active fw-semibold" : "")" asp-controller="Home" asp-action="Index">@Localizer["DashboardNavLink"]</a>
+                            </li>
+                            @foreach (var module in navModules)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link @(currentController == module.Controller ? "active fw-semibold" : "")" asp-controller="@module.Controller" asp-action="Index">@module.Icon @module.DisplayName</a>
+                                </li>
+                            }
+                        }
+                    </ul>
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <form asp-controller="Search" asp-action="Index" method="get" class="mb-0" role="search">
+                                <input type="search" name="q" value="@searchQuery" class="form-control form-control-sm" style="width: 12rem;" placeholder="@Localizer["SearchPlaceholder"]" aria-label="@Localizer["SearchPlaceholder"]" />
+                            </form>
                             <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#quickCaptureModal">
                                 ➕ @Localizer["QuickCaptureButton"]
                             </button>
@@ -58,6 +73,7 @@
                                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">@activeReminderCount</span>
                                 }
                             </a>
+                            <a asp-controller="Modules" asp-action="Index" class="btn btn-outline-secondary btn-sm" aria-label="@Localizer["ModulesLink"]" title="@Localizer["ModulesLink"]">⚙️</a>
                         }
                         <form asp-controller="Home" asp-action="SetLanguage" method="post" class="mb-0">
                             <input type="hidden" name="returnUrl" value="@returnUrl" />

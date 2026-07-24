@@ -1,5 +1,6 @@
 using HomeOS.Models.Calendar;
 using HomeOS.Models.Households;
+using HomeOS.Models.Modules;
 using HomeOS.Models.Reminders;
 using HomeOS.Models.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -27,6 +28,7 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     public DbSet<ReminderRecipient> ReminderRecipients => Set<ReminderRecipient>();
     public DbSet<Event> Events => Set<Event>();
     public DbSet<EventAttendee> EventAttendees => Set<EventAttendee>();
+    public DbSet<ModuleState> ModuleStates => Set<ModuleState>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -75,5 +77,8 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
         builder.Entity<Tag>().HasIndex(t => t.HouseholdId);
         builder.Entity<Reminder>().HasIndex(r => r.HouseholdId);
         builder.Entity<Event>().HasIndex(e => e.HouseholdId);
+
+        // One state row per (household, module); look-ups filter by household.
+        builder.Entity<ModuleState>().HasIndex(s => new { s.HouseholdId, s.ModuleKey }).IsUnique();
     }
 }

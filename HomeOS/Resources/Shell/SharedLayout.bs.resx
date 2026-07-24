@@ -18,29 +18,11 @@
   <data name="DashboardNavLink" xml:space="preserve">
     <value>Kontrolna tabla</value>
   </data>
-  <data name="TasksNavLink" xml:space="preserve">
-    <value>Zadaci</value>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>Pretraga...</value>
   </data>
-  <data name="KanbanNavLink" xml:space="preserve">
-    <value>Kanban</value>
-  </data>
-  <data name="CalendarNavLink" xml:space="preserve">
-    <value>Kalendar</value>
-  </data>
-  <data name="RemindersNavLink" xml:space="preserve">
-    <value>Podsjetnici</value>
-  </data>
-  <data name="NotesNavLink" xml:space="preserve">
-    <value>Bilješke</value>
-  </data>
-  <data name="FinanceNavLink" xml:space="preserve">
-    <value>Finansije</value>
-  </data>
-  <data name="LifeAdminNavLink" xml:space="preserve">
-    <value>Kućna administracija</value>
-  </data>
-  <data name="ShoppingListsNavLink" xml:space="preserve">
-    <value>Kupovina</value>
+  <data name="ModulesLink" xml:space="preserve">
+    <value>Moduli</value>
   </data>
   <data name="QuickCaptureButton" xml:space="preserve">
     <value>Brzi unos</value>

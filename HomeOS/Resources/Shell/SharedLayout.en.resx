@@ -18,29 +18,11 @@
   <data name="DashboardNavLink" xml:space="preserve">
     <value>Dashboard</value>
   </data>
-  <data name="TasksNavLink" xml:space="preserve">
-    <value>Tasks</value>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>Search...</value>
   </data>
-  <data name="KanbanNavLink" xml:space="preserve">
-    <value>Kanban</value>
-  </data>
-  <data name="CalendarNavLink" xml:space="preserve">
-    <value>Calendar</value>
-  </data>
-  <data name="RemindersNavLink" xml:space="preserve">
-    <value>Reminders</value>
-  </data>
-  <data name="NotesNavLink" xml:space="preserve">
-    <value>Notes</value>
-  </data>
-  <data name="FinanceNavLink" xml:space="preserve">
-    <value>Finance</value>
-  </data>
-  <data name="LifeAdminNavLink" xml:space="preserve">
-    <value>Life Admin</value>
-  </data>
-  <data name="ShoppingListsNavLink" xml:space="preserve">
-    <value>Shopping Lists</value>
+  <data name="ModulesLink" xml:space="preserve">
+    <value>Modules</value>
   </data>
   <data name="QuickCaptureButton" xml:space="preserve">
     <value>Quick capture</value>

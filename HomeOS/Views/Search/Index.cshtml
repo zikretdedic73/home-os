@@ -1,0 +1,37 @@
+@model HomeOS.Models.Search.SearchResultsViewModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    ViewData["Title"] = string.Format(Localizer["PageTitleFormat"].Value, Model.Query);
+}
+
+<h2 class="mb-3">@string.Format(Localizer["PageTitleFormat"].Value, Model.Query)</h2>
+
+@if (string.IsNullOrWhiteSpace(Model.Query))
+{
+    <p class="text-muted">@Localizer["EmptyQueryMessage"]</p>
+}
+else if (!Model.HasResults)
+{
+    <p class="text-muted">@string.Format(Localizer["NoResultsFormat"].Value, Model.Query)</p>
+}
+else
+{
+    foreach (var group in Model.Groups)
+    {
+        <div class="mb-4">
+            <h5 class="border-bottom pb-2">@group.ModuleDisplayName</h5>
+            <div class="list-group">
+                @foreach (var result in group.Results)
+                {
+                    <a href="@result.Url" class="list-group-item list-group-item-action">
+                        <div class="fw-semibold">@result.Title</div>
+                        @if (!string.IsNullOrWhiteSpace(result.Snippet))
+                        {
+                            <div class="small text-muted">@result.Snippet</div>
+                        }
+                    </a>
+                }
+            </div>
+        </div>
+    }
+}

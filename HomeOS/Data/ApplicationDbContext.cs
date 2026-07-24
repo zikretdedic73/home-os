@@ -1,5 +1,6 @@
 using HomeOS.Models.Calendar;
 using HomeOS.Models.Households;
+using HomeOS.Models.Kanban;
 using HomeOS.Models.Modules;
 using HomeOS.Models.Reminders;
 using HomeOS.Models.Tasks;
@@ -31,6 +32,9 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     public DbSet<ModuleState> ModuleStates => Set<ModuleState>();
     public DbSet<ModulePermissionState> ModulePermissionStates => Set<ModulePermissionState>();
     public DbSet<MemberModuleAccess> MemberModuleAccesses => Set<MemberModuleAccess>();
+    public DbSet<Board> Boards => Set<Board>();
+    public DbSet<Column> Columns => Set<Column>();
+    public DbSet<Card> Cards => Set<Card>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -86,5 +90,21 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
             .HasIndex(p => new { p.HouseholdId, p.ModuleKey, p.Permission }).IsUnique();
         builder.Entity<MemberModuleAccess>()
             .HasIndex(a => new { a.HouseholdId, a.MemberId, a.ModuleKey }).IsUnique();
+
+        // Kanban: Board (1)-<(N) Column (1)-<(N) Card; Card links a TaskItem
+        // (no cascade from task - deleting a task shouldn't silently drop cards).
+        builder.Entity<Column>()
+            .HasOne(c => c.Board).WithMany(b => b.Columns)
+            .HasForeignKey(c => c.BoardId).OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Card>()
+            .HasOne(c => c.Column).WithMany(col => col.Cards)
+            .HasForeignKey(c => c.ColumnId).OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Card>()
+            .HasOne(c => c.TaskItem).WithMany()
+            .HasForeignKey(c => c.TaskItemId).OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Board>().HasIndex(b => b.HouseholdId);
     }
 }

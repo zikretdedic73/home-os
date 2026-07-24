@@ -1,0 +1,116 @@
+@model HomeOS.Models.Kanban.Board
+@using HomeOS.Models.Tasks
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@inject Microsoft.Extensions.Localization.IStringLocalizer<TaskEnums> EnumLocalizer
+@{
+    ViewData["Title"] = Model.Name;
+    var availableTasks = ViewBag.AvailableTasks as List<TaskItem> ?? new List<TaskItem>();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <div>
+        <a asp-action="Index" class="text-decoration-none small">@Localizer["BackToBoards"]</a>
+        <h2 class="mb-0">📋 @Model.Name</h2>
+    </div>
+</div>
+
+<form asp-action="AddCard" method="post" class="row g-2 mb-4 align-items-center" style="max-width: 40rem;">
+    <input type="hidden" name="boardId" value="@Model.Id" />
+    <div class="col-12 col-sm-auto">
+        <label class="col-form-label">@Localizer["AddCardLabel"]</label>
+    </div>
+    <div class="col">
+        @if (availableTasks.Any())
+        {
+            <select name="taskItemId" class="form-select">
+                @foreach (var t in availableTasks)
+                {
+                    <option value="@t.Id">@t.Title</option>
+                }
+            </select>
+        }
+        else
+        {
+            <span class="text-muted small">@Localizer["NoTasksToAdd"]</span>
+        }
+    </div>
+    @if (availableTasks.Any())
+    {
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">@Localizer["AddButton"]</button>
+        </div>
+    }
+</form>
+
+@Html.AntiForgeryToken()
+
+<div class="row g-3 flex-nowrap overflow-auto pb-2">
+    @foreach (var column in Model.Columns.OrderBy(c => c.SortOrder))
+    {
+        var borderClass = column.MappedStatus switch
+        {
+            TaskState.Done => "border-success",
+            TaskState.InProgress => "border-info",
+            _ => "border-secondary"
+        };
+        <div class="col-12 col-md-4">
+            <div class="card h-100 border-top border-4 @borderClass">
+                <div class="card-header fw-semibold bg-transparent">@EnumLocalizer[$"TaskState_{column.MappedStatus}"]</div>
+                <div class="card-body kanban-column p-2" data-column-id="@column.Id" style="min-height: 8rem;">
+                    @foreach (var card in column.Cards.OrderBy(c => c.SortOrder))
+                    {
+                        var priorityClass = card.TaskItem?.Priority switch
+                        {
+                            TaskPriority.Urgent => "border-danger",
+                            TaskPriority.High => "border-warning",
+                            _ => "border-light"
+                        };
+                        <div class="card mb-2 shadow-sm kanban-card border-start border-3 @priorityClass" data-card-id="@card.Id">
+                            <div class="card-body p-2 d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="fw-medium">@card.TaskItem?.Title</div>
+                                    <span class="badge bg-info text-dark">@EnumLocalizer[$"TaskPriority_{card.TaskItem?.Priority}"]</span>
+                                </div>
+                                <form asp-action="RemoveCard" method="post" class="mb-0">
+                                    <input type="hidden" name="cardId" value="@card.Id" />
+                                    <input type="hidden" name="boardId" value="@Model.Id" />
+                                    <button type="submit" class="btn btn-sm btn-link text-danger p-0" title="@Localizer["RemoveCardTitle"]">✕</button>
+                                </form>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.3/Sortable.min.js"></script>
+    <script>
+        (function () {
+            var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+            var moveUrl = '@Url.Action("MoveCard")';
+
+            document.querySelectorAll('.kanban-column').forEach(function (col) {
+                new Sortable(col, {
+                    group: 'kanban',
+                    animation: 150,
+                    onEnd: function (evt) {
+                        var cardId = evt.item.getAttribute('data-card-id');
+                        var toColumnId = evt.to.getAttribute('data-column-id');
+                        var body = new URLSearchParams();
+                        body.append('cardId', cardId);
+                        body.append('toColumnId', toColumnId);
+                        body.append('newIndex', evt.newIndex);
+                        body.append('__RequestVerificationToken', token);
+                        fetch(moveUrl, { method: 'POST', body: body })
+                            .then(function (r) { return r.json(); })
+                            .then(function (d) { if (!d.success) { location.reload(); } })
+                            .catch(function () { location.reload(); });
+                    }
+                });
+            });
+        })();
+    </script>
+}

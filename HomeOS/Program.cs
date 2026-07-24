@@ -1,6 +1,7 @@
 using HomeOS.Data;
 using HomeOS.Models.Calendar;
 using HomeOS.Models.Events;
+using HomeOS.Models.Kanban;
 using HomeOS.Models.Reminders;
 using HomeOS.Models.Tasks;
 using HomeOS.Services;
@@ -56,6 +57,9 @@ builder.Services.AddScoped<IDashboardContributor, CalendarDashboardContributor>(
 builder.Services.AddScoped<IModuleDescriptor, RemindersModule>();
 builder.Services.AddScoped<ISearchable, ReminderSearchProvider>();
 builder.Services.AddScoped<IDashboardContributor, RemindersDashboardContributor>();
+
+builder.Services.AddScoped<IModuleDescriptor, KanbanModule>();
+builder.Services.AddScoped<ISearchable, BoardSearchProvider>();
 
 // --- Localization (Shell provides the mechanism, each module owns its own .resx -
 // see Docs/02_Pravila_Programiranja.md, section 5) ---

@@ -43,6 +43,7 @@ builder.Services.AddScoped<IEventHandler<TaskWithDueDateCreatedEvent>, TaskWithD
 builder.Services.AddScoped<IModuleRegistry, ModuleRegistry>();
 builder.Services.AddScoped<ISearchService, SearchService>();
 builder.Services.AddScoped<IPermissionService, PermissionService>();
+builder.Services.AddScoped<IMemberAccessService, MemberAccessService>();
 
 builder.Services.AddScoped<IModuleDescriptor, TasksModule>();
 builder.Services.AddScoped<ISearchable, TaskSearchProvider>();

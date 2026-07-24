@@ -8,11 +8,13 @@ public class ModuleRegistry : IModuleRegistry
 {
     private readonly IEnumerable<IModuleDescriptor> _descriptors;
     private readonly ApplicationDbContext _context;
+    private readonly IMemberAccessService _memberAccess;
 
-    public ModuleRegistry(IEnumerable<IModuleDescriptor> descriptors, ApplicationDbContext context)
+    public ModuleRegistry(IEnumerable<IModuleDescriptor> descriptors, ApplicationDbContext context, IMemberAccessService memberAccess)
     {
         _descriptors = descriptors;
         _context = context;
+        _memberAccess = memberAccess;
     }
 
     public async Task<IReadOnlyList<ModuleInfo>> GetAllAsync(int householdId)
@@ -31,6 +33,17 @@ public class ModuleRegistry : IModuleRegistry
 
         return _descriptors
             .Where(d => !disabledKeys.Contains(d.Key))
+            .OrderBy(d => d.SortOrder)
+            .ToList();
+    }
+
+    public async Task<IReadOnlyList<IModuleDescriptor>> GetVisibleForMemberAsync(int householdId, int memberId)
+    {
+        var disabledKeys = await GetDisabledKeysAsync(householdId);
+        var restrictedKeys = await _memberAccess.GetRestrictedKeysAsync(householdId, memberId);
+
+        return _descriptors
+            .Where(d => !disabledKeys.Contains(d.Key) && !restrictedKeys.Contains(d.Key))
             .OrderBy(d => d.SortOrder)
             .ToList();
     }

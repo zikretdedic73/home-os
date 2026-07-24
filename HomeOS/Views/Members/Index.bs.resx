@@ -36,4 +36,7 @@
   <data name="RemoveButton" xml:space="preserve">
     <value>Ukloni</value>
   </data>
+  <data name="ManageAccessButton" xml:space="preserve">
+    <value>Pristup modulima</value>
+  </data>
 </root>

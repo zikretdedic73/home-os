@@ -23,11 +23,12 @@ public class SearchController : Controller
     public async Task<IActionResult> Index(string? q)
     {
         var householdId = await _household.GetCurrentHouseholdIdAsync();
-        var results = await _search.SearchAsync(householdId, q ?? string.Empty);
+        var memberId = await _household.GetCurrentMemberIdAsync();
+        var results = await _search.SearchAsync(householdId, memberId, q ?? string.Empty);
 
         // Map each module key to its localized display name (owned by the
         // module), so results can be grouped under a readable heading.
-        var moduleNames = (await _registry.GetEnabledAsync(householdId))
+        var moduleNames = (await _registry.GetVisibleForMemberAsync(householdId, memberId))
             .ToDictionary(m => m.Key, m => m.DisplayName);
 
         var viewModel = new SearchResultsViewModel

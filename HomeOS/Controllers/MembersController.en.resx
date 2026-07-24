@@ -24,6 +24,9 @@
   <data name="MemberRemovedMessage" xml:space="preserve">
     <value>Member removed.</value>
   </data>
+  <data name="AccessUpdatedMessage" xml:space="preserve">
+    <value>Access updated.</value>
+  </data>
   <data name="InviteEmailSubject" xml:space="preserve">
     <value>You have been invited to a Home OS household</value>
   </data>

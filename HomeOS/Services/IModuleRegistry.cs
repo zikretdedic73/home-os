@@ -14,5 +14,9 @@ public interface IModuleRegistry
     // Only enabled modules, sorted - for navigation and search.
     Task<IReadOnlyList<IModuleDescriptor>> GetEnabledAsync(int householdId);
 
+    // Modules a specific member actually sees: enabled for the household AND
+    // not restricted for that member (RBAC - Docs/01_Roadmap.md, section 3.4).
+    Task<IReadOnlyList<IModuleDescriptor>> GetVisibleForMemberAsync(int householdId, int memberId);
+
     Task SetEnabledAsync(int householdId, string moduleKey, bool enabled);
 }

@@ -36,4 +36,7 @@
   <data name="RemoveButton" xml:space="preserve">
     <value>Remove</value>
   </data>
+  <data name="ManageAccessButton" xml:space="preserve">
+    <value>Module access</value>
+  </data>
 </root>

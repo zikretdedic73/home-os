@@ -22,9 +22,10 @@
         isOwner = await Household.IsCurrentMemberOwnerAsync();
 
         // Navigation is generated from the module registry, never hardcoded -
-        // a new module appears here automatically, a disabled one disappears
-        // (Docs/00_Specifikacija_Izvor.md, "automatski vidljiva u navigaciji").
-        navModules = await ModuleRegistry.GetEnabledAsync(currentHouseholdId);
+        // a new module appears here automatically, a disabled one disappears,
+        // and modules the owner restricted for this member are hidden
+        // (Docs/00_Specifikacija_Izvor.md + RBAC, section 3.4).
+        navModules = await ModuleRegistry.GetVisibleForMemberAsync(currentHouseholdId, currentMemberId);
     }
 }
 <!DOCTYPE html>

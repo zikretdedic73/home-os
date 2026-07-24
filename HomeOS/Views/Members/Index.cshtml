@@ -46,10 +46,13 @@
             </div>
             @if (!member.IsOwner)
             {
-                <form asp-action="Remove" method="post" class="mb-0">
-                    <input type="hidden" name="id" value="@member.Id" />
-                    <button type="submit" class="btn btn-sm btn-outline-danger">@Localizer["RemoveButton"]</button>
-                </form>
+                <div class="d-flex gap-2">
+                    <a asp-action="Access" asp-route-id="@member.Id" class="btn btn-sm btn-outline-secondary">@Localizer["ManageAccessButton"]</a>
+                    <form asp-action="Remove" method="post" class="mb-0">
+                        <input type="hidden" name="id" value="@member.Id" />
+                        <button type="submit" class="btn btn-sm btn-outline-danger">@Localizer["RemoveButton"]</button>
+                    </form>
+                </div>
             }
         </li>
     }

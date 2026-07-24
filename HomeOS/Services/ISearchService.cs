@@ -5,5 +5,7 @@ namespace HomeOS.Services;
 // modules that are currently disabled for the household.
 public interface ISearchService
 {
-    Task<List<SearchResult>> SearchAsync(int householdId, string query);
+    // memberId is used so results from modules the member can't access (RBAC)
+    // are excluded, alongside modules disabled for the household.
+    Task<List<SearchResult>> SearchAsync(int householdId, int memberId, string query);
 }

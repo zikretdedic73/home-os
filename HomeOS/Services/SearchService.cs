@@ -11,14 +11,15 @@ public class SearchService : ISearchService
         _registry = registry;
     }
 
-    public async Task<List<SearchResult>> SearchAsync(int householdId, string query)
+    public async Task<List<SearchResult>> SearchAsync(int householdId, int memberId, string query)
     {
         if (string.IsNullOrWhiteSpace(query))
             return new List<SearchResult>();
 
-        // Only include results from modules the household has enabled - a
-        // disabled module must disappear from search too, not just navigation.
-        var enabledKeys = (await _registry.GetEnabledAsync(householdId))
+        // Only include results from modules visible to this member - a disabled
+        // module (household) or a restricted one (RBAC) disappears from search
+        // too, not just navigation.
+        var enabledKeys = (await _registry.GetVisibleForMemberAsync(householdId, memberId))
             .Select(m => m.Key)
             .ToHashSet();
 

@@ -1,5 +1,6 @@
 using HomeOS.Data;
 using HomeOS.Models.Households;
+using HomeOS.Models.Modules;
 using HomeOS.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,13 +20,17 @@ public class MembersController : Controller
     private readonly ICurrentHouseholdService _household;
     private readonly IEmailSender _emailSender;
     private readonly IStringLocalizer<MembersController> _localizer;
+    private readonly IModuleRegistry _registry;
+    private readonly IMemberAccessService _memberAccess;
 
-    public MembersController(ApplicationDbContext context, ICurrentHouseholdService household, IEmailSender emailSender, IStringLocalizer<MembersController> localizer)
+    public MembersController(ApplicationDbContext context, ICurrentHouseholdService household, IEmailSender emailSender, IStringLocalizer<MembersController> localizer, IModuleRegistry registry, IMemberAccessService memberAccess)
     {
         _context = context;
         _household = household;
         _emailSender = emailSender;
         _localizer = localizer;
+        _registry = registry;
+        _memberAccess = memberAccess;
     }
 
     // GET: /Members
@@ -107,6 +112,45 @@ public class MembersController : Controller
         }
 
         return RedirectToAction(nameof(Index));
+    }
+
+    // GET: /Members/Access/5 - owner sets which modules this member may open.
+    public async Task<IActionResult> Access(int id)
+    {
+        if (!await _household.IsCurrentMemberOwnerAsync())
+            return Forbid();
+
+        var householdId = await _household.GetCurrentHouseholdIdAsync();
+        var member = await _context.Members
+            .FirstOrDefaultAsync(m => m.Id == id && m.HouseholdId == householdId);
+
+        if (member == null || member.IsOwner)
+            return RedirectToAction(nameof(Index));
+
+        var modules = await _registry.GetAllAsync(householdId);
+        var restricted = await _memberAccess.GetRestrictedKeysAsync(householdId, id);
+
+        ViewBag.Member = member;
+        ViewBag.Rows = modules
+            .Select(m => new MemberModuleAccessRow(m.Descriptor.Key, m.Descriptor.DisplayName, m.Descriptor.Icon, !restricted.Contains(m.Descriptor.Key)))
+            .ToList();
+
+        return View();
+    }
+
+    // POST: /Members/ToggleAccess
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ToggleAccess(int memberId, string moduleKey, bool canAccess)
+    {
+        if (!await _household.IsCurrentMemberOwnerAsync())
+            return Forbid();
+
+        var householdId = await _household.GetCurrentHouseholdIdAsync();
+        await _memberAccess.SetAccessAsync(householdId, memberId, moduleKey, canAccess);
+
+        TempData["Success"] = _localizer["AccessUpdatedMessage"].Value;
+        return RedirectToAction(nameof(Access), new { id = memberId });
     }
 
     private async Task SendInviteEmailAsync(string email)

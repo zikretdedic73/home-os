@@ -24,6 +24,9 @@
   <data name="MemberRemovedMessage" xml:space="preserve">
     <value>Član uklonjen.</value>
   </data>
+  <data name="AccessUpdatedMessage" xml:space="preserve">
+    <value>Pristup ažuriran.</value>
+  </data>
   <data name="InviteEmailSubject" xml:space="preserve">
     <value>Pozvani ste u Home OS domaćinstvo</value>
   </data>

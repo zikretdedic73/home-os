@@ -60,7 +60,7 @@ namespace HomeOS.Controllers
             // simplification for this scope - see Docs/01_Roadmap.md, section 2.2.
             await _reminders.ProcessDueRemindersAsync(householdId);
 
-            var enabledKeys = (await _moduleRegistry.GetEnabledAsync(householdId))
+            var enabledKeys = (await _moduleRegistry.GetVisibleForMemberAsync(householdId, memberId))
                 .Select(m => m.Key)
                 .ToHashSet();
 

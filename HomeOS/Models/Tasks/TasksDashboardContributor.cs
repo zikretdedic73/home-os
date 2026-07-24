@@ -1,4 +1,5 @@
 using HomeOS.Data;
+using HomeOS.Models.Common;
 using HomeOS.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
@@ -30,6 +31,7 @@ public class TasksDashboardContributor : IDashboardContributor
             .Where(t => t.HouseholdId == householdId && !t.IsDeleted
                 && t.Status != TaskState.Done
                 && t.DueDate != null && t.DueDate < tomorrowUtc)
+            .VisibleTo(memberId)
             .OrderBy(t => t.DueDate)
             .ToListAsync();
 

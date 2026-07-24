@@ -12,5 +12,7 @@ public record SearchResult(string ModuleName, string Title, string? Snippet, str
 // ISearchable). See Docs/02_Pravila_Programiranja.md, section 1.2.
 public interface ISearchable
 {
-    Task<List<SearchResult>> SearchAsync(int householdId, string query);
+    // memberId lets a provider honor item visibility (a member only finds
+    // household-shared items plus their own private ones).
+    Task<List<SearchResult>> SearchAsync(int householdId, int memberId, string query);
 }

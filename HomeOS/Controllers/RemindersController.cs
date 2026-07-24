@@ -1,4 +1,5 @@
 using HomeOS.Data;
+using HomeOS.Models.Common;
 using HomeOS.Models.Households;
 using HomeOS.Models.Reminders;
 using HomeOS.Services;
@@ -27,9 +28,11 @@ public class RemindersController : Controller
     public async Task<IActionResult> Index()
     {
         var householdId = await _household.GetCurrentHouseholdIdAsync();
+        var memberId = await _household.GetCurrentMemberIdAsync();
 
         var reminders = await _context.Reminders
             .Where(r => r.HouseholdId == householdId && !r.IsDeleted)
+            .VisibleTo(memberId)
             .Include(r => r.Recipients)
             .OrderBy(r => r.IsResolved)
             .ThenBy(r => r.TriggerAtUtc)
@@ -114,6 +117,7 @@ public class RemindersController : Controller
         reminder.Title = model.Title;
         reminder.TriggerAtUtc = model.TriggerAtUtc;
         reminder.RecurrenceRule = model.RecurrenceRule;
+        reminder.Visibility = model.Visibility;
         reminder.UpdatedAtUtc = DateTime.UtcNow;
 
         _context.ReminderRecipients.RemoveRange(reminder.Recipients);

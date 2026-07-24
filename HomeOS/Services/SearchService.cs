@@ -26,7 +26,7 @@ public class SearchService : ISearchService
         var results = new List<SearchResult>();
         foreach (var provider in _providers)
         {
-            var providerResults = await provider.SearchAsync(householdId, query.Trim());
+            var providerResults = await provider.SearchAsync(householdId, memberId, query.Trim());
             results.AddRange(providerResults.Where(r => enabledKeys.Contains(r.ModuleName)));
         }
 

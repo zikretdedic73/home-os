@@ -1,4 +1,5 @@
 using HomeOS.Data;
+using HomeOS.Models.Common;
 using HomeOS.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,11 +16,12 @@ public class TaskSearchProvider : ISearchable
         _context = context;
     }
 
-    public async Task<List<SearchResult>> SearchAsync(int householdId, string query)
+    public async Task<List<SearchResult>> SearchAsync(int householdId, int memberId, string query)
     {
         var matches = await _context.Tasks
             .Where(t => t.HouseholdId == householdId && !t.IsDeleted
                 && (t.Title.Contains(query) || (t.Description != null && t.Description.Contains(query))))
+            .VisibleTo(memberId)
             .ToListAsync();
 
         return matches

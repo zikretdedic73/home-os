@@ -1,4 +1,5 @@
 using HomeOS.Data;
+using HomeOS.Models.Common;
 using HomeOS.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,10 +15,11 @@ public class ReminderSearchProvider : ISearchable
         _context = context;
     }
 
-    public async Task<List<SearchResult>> SearchAsync(int householdId, string query)
+    public async Task<List<SearchResult>> SearchAsync(int householdId, int memberId, string query)
     {
         var matches = await _context.Reminders
             .Where(r => r.HouseholdId == householdId && !r.IsDeleted && r.Title.Contains(query))
+            .VisibleTo(memberId)
             .ToListAsync();
 
         return matches

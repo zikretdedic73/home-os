@@ -1,4 +1,5 @@
 using HomeOS.Data;
+using HomeOS.Models.Common;
 using HomeOS.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,11 +15,12 @@ public class EventSearchProvider : ISearchable
         _context = context;
     }
 
-    public async Task<List<SearchResult>> SearchAsync(int householdId, string query)
+    public async Task<List<SearchResult>> SearchAsync(int householdId, int memberId, string query)
     {
         var matches = await _context.Events
             .Where(e => e.HouseholdId == householdId && !e.IsDeleted
                 && (e.Title.Contains(query) || (e.Location != null && e.Location.Contains(query))))
+            .VisibleTo(memberId)
             .ToListAsync();
 
         return matches

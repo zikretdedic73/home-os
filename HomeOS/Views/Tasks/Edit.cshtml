@@ -1,9 +1,11 @@
 @model HomeOS.Models.Tasks.TaskItem
 @using HomeOS.Models.Households
 @using HomeOS.Models.Tasks
+@using HomeOS.Models.Common
 @using Microsoft.AspNetCore.Mvc.Rendering
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @inject Microsoft.Extensions.Localization.IStringLocalizer<TaskEnums> EnumLocalizer
+@inject Microsoft.Extensions.Localization.IStringLocalizer<VisibilityLabels> VisLoc
 @{
     ViewData["Title"] = Localizer["PageTitle"];
     var members = ViewBag.Members as List<Member>;
@@ -12,6 +14,11 @@
         .Select(p => new SelectListItem(EnumLocalizer[$"TaskPriority_{p}"], p.ToString()));
     var statusOptions = Enum.GetValues<TaskState>()
         .Select(s => new SelectListItem(EnumLocalizer[$"TaskState_{s}"], s.ToString()));
+    var visibilityOptions = new List<SelectListItem>
+    {
+        new(VisLoc["Household"].Value, "Household"),
+        new(VisLoc["Private"].Value, "Private")
+    };
 }
 
 <h2>@Localizer["PageTitle"]</h2>
@@ -56,6 +63,10 @@
     <div class="col-12 col-md-6">
         <label class="form-label">@Localizer["TagsLabel"]</label>
         <input name="tagsInput" class="form-control" value="@tagsInput" />
+    </div>
+    <div class="col-12 col-md-6">
+        <label class="form-label">@VisLoc["Label"]</label>
+        <select asp-for="Visibility" class="form-select" asp-items="visibilityOptions"></select>
     </div>
     <div class="col-12">
         <button type="submit" class="btn btn-primary">@Localizer["SaveChangesButton"]</button>

@@ -1,4 +1,5 @@
 using HomeOS.Data;
+using HomeOS.Models.Common;
 using HomeOS.Models.Events;
 using HomeOS.Models.Households;
 using HomeOS.Models.Tasks;
@@ -31,9 +32,11 @@ public class TasksController : Controller
     public async Task<IActionResult> Index(TaskState? statusFilter, TaskPriority? priorityFilter, int? assigneeFilter, string? sortBy)
     {
         var householdId = await _household.GetCurrentHouseholdIdAsync();
+        var memberId = await _household.GetCurrentMemberIdAsync();
 
         var query = _context.Tasks
             .Where(t => t.HouseholdId == householdId && !t.IsDeleted)
+            .VisibleTo(memberId)
             .Include(t => t.SubTasks)
             .Include(t => t.TaskTags).ThenInclude(tt => tt.Tag)
             .AsQueryable();
@@ -155,6 +158,7 @@ public class TasksController : Controller
         task.Status = model.Status;
         task.AssigneeId = model.AssigneeId;
         task.RecurrenceRule = model.RecurrenceRule;
+        task.Visibility = model.Visibility;
         task.UpdatedAtUtc = DateTime.UtcNow;
 
         _context.TaskTags.RemoveRange(task.TaskTags);

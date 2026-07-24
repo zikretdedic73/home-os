@@ -1,4 +1,5 @@
 using HomeOS.Data;
+using HomeOS.Models.Common;
 using HomeOS.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
@@ -28,6 +29,7 @@ public class CalendarDashboardContributor : IDashboardContributor
         var events = await _context.Events
             .Where(e => e.HouseholdId == householdId && !e.IsDeleted
                 && e.StartsAtUtc < tomorrowUtc && e.EndsAtUtc >= todayUtc)
+            .VisibleTo(memberId)
             .OrderBy(e => e.StartsAtUtc)
             .ToListAsync();
 

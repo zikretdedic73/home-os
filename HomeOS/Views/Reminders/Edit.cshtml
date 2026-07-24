@@ -1,10 +1,18 @@
 @model HomeOS.Models.Reminders.Reminder
 @using HomeOS.Models.Households
+@using HomeOS.Models.Common
+@using Microsoft.AspNetCore.Mvc.Rendering
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@inject Microsoft.Extensions.Localization.IStringLocalizer<VisibilityLabels> VisLoc
 @{
     ViewData["Title"] = Localizer["PageTitle"];
     var members = ViewBag.Members as List<Member>;
     var selectedMemberIds = ViewBag.SelectedMemberIds as List<int> ?? new List<int>();
+    var visibilityOptions = new List<SelectListItem>
+    {
+        new(VisLoc["Household"].Value, "Household"),
+        new(VisLoc["Private"].Value, "Private")
+    };
 }
 
 <h2>@Localizer["PageTitle"]</h2>
@@ -30,6 +38,10 @@
             <option value="monthly">@Localizer["RecurrenceMonthly"]</option>
             <option value="yearly">@Localizer["RecurrenceYearly"]</option>
         </select>
+    </div>
+    <div class="col-12 col-md-6">
+        <label class="form-label">@VisLoc["Label"]</label>
+        <select asp-for="Visibility" class="form-select" asp-items="visibilityOptions"></select>
     </div>
     <div class="col-12">
         <label class="form-label">@Localizer["RecipientsLabel"]</label>

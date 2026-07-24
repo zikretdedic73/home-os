@@ -1,5 +1,6 @@
 using HomeOS.Data;
 using HomeOS.Models.Calendar;
+using HomeOS.Models.Common;
 using HomeOS.Models.Households;
 using HomeOS.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -35,10 +36,12 @@ public class CalendarController : Controller
     public async Task<IActionResult> Events(DateTime start, DateTime end)
     {
         var householdId = await _household.GetCurrentHouseholdIdAsync();
+        var memberId = await _household.GetCurrentMemberIdAsync();
 
         var events = await _context.Events
             .Where(e => e.HouseholdId == householdId && !e.IsDeleted
                 && e.StartsAtUtc < end && e.EndsAtUtc > start)
+            .VisibleTo(memberId)
             .Select(e => new
             {
                 id = $"event-{e.Id}",
@@ -62,6 +65,7 @@ public class CalendarController : Controller
         var tasks = await _context.Tasks
             .Where(t => t.HouseholdId == householdId && !t.IsDeleted
                 && t.DueDate != null && t.DueDate >= start && t.DueDate < end)
+            .VisibleTo(memberId)
             .Select(t => new
             {
                 id = $"task-{t.Id}",
@@ -153,6 +157,7 @@ public class CalendarController : Controller
         eventItem.EndsAtUtc = model.EndsAtUtc;
         eventItem.Location = model.Location;
         eventItem.RecurrenceRule = model.RecurrenceRule;
+        eventItem.Visibility = model.Visibility;
         eventItem.UpdatedAtUtc = DateTime.UtcNow;
 
         _context.EventAttendees.RemoveRange(eventItem.Attendees);

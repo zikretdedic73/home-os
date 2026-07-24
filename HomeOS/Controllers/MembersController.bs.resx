@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="EmailRequiredMessage" xml:space="preserve">
+    <value>Unesite e-mail adresu.</value>
+  </data>
+  <data name="AlreadyMemberMessage" xml:space="preserve">
+    <value>Taj e-mail je već član ili pozvan.</value>
+  </data>
+  <data name="MemberInvitedMessage" xml:space="preserve">
+    <value>Pozivnica poslana.</value>
+  </data>
+  <data name="MemberRemovedMessage" xml:space="preserve">
+    <value>Član uklonjen.</value>
+  </data>
+  <data name="InviteEmailSubject" xml:space="preserve">
+    <value>Pozvani ste u Home OS domaćinstvo</value>
+  </data>
+  <data name="InviteEmailBody" xml:space="preserve">
+    <value>&lt;p&gt;Pozvani ste da se pridružite domaćinstvu na Home OS-u.&lt;/p&gt;&lt;p&gt;Registrujte se ovom e-mail adresom ({0}) da se automatski pridružite: &lt;a href="{1}"&gt;{1}&lt;/a&gt;&lt;/p&gt;</value>
+  </data>
+</root>

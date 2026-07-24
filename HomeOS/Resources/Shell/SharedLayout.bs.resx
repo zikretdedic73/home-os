@@ -24,6 +24,9 @@
   <data name="ModulesLink" xml:space="preserve">
     <value>Moduli</value>
   </data>
+  <data name="MembersLink" xml:space="preserve">
+    <value>Članovi domaćinstva</value>
+  </data>
   <data name="CommandPaletteTitle" xml:space="preserve">
     <value>Komandna paleta</value>
   </data>

@@ -1,0 +1,56 @@
+@model List<HomeOS.Models.Households.Member>
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["PageTitle"];
+}
+
+<h2 class="mb-2">@Localizer["PageTitle"]</h2>
+<p class="text-muted">@Localizer["Intro"]</p>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">@TempData["Error"]</div>
+}
+
+<form asp-action="Invite" method="post" class="row g-2 mb-4" style="max-width: 32rem;">
+    <div class="col">
+        <input type="email" name="email" class="form-control" placeholder="@Localizer["InvitePlaceholder"]" required />
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">@Localizer["InviteButton"]</button>
+    </div>
+</form>
+
+<ul class="list-group" style="max-width: 40rem;">
+    @foreach (var member in Model)
+    {
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+                <span>@(string.IsNullOrEmpty(member.DisplayName) ? member.Email : member.DisplayName)</span>
+                @if (member.IsOwner)
+                {
+                    <span class="badge bg-primary ms-2">@Localizer["OwnerBadge"]</span>
+                }
+                else if (member.IsPending)
+                {
+                    <span class="badge bg-secondary ms-2">@Localizer["PendingBadge"]</span>
+                }
+                else
+                {
+                    <span class="badge bg-success ms-2">@Localizer["ActiveBadge"]</span>
+                }
+            </div>
+            @if (!member.IsOwner)
+            {
+                <form asp-action="Remove" method="post" class="mb-0">
+                    <input type="hidden" name="id" value="@member.Id" />
+                    <button type="submit" class="btn btn-sm btn-outline-danger">@Localizer["RemoveButton"]</button>
+                </form>
+            }
+        </li>
+    }
+</ul>

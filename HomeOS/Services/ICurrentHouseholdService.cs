@@ -7,4 +7,8 @@ public interface ICurrentHouseholdService
 {
     Task<int> GetCurrentMemberIdAsync();
     Task<int> GetCurrentHouseholdIdAsync();
+
+    // Whether the current member owns the household (only the owner manages
+    // members and per-member module access).
+    Task<bool> IsCurrentMemberOwnerAsync();
 }

@@ -12,12 +12,14 @@
     var searchQuery = Context.Request.Query["q"].ToString();
 
     var activeReminderCount = 0;
+    var isOwner = false;
     IReadOnlyList<IModuleDescriptor> navModules = new List<IModuleDescriptor>();
     if (User.Identity?.IsAuthenticated == true)
     {
         var currentHouseholdId = await Household.GetCurrentHouseholdIdAsync();
         var currentMemberId = await Household.GetCurrentMemberIdAsync();
         activeReminderCount = (await Reminders.GetActiveRemindersForMemberAsync(currentHouseholdId, currentMemberId)).Count;
+        isOwner = await Household.IsCurrentMemberOwnerAsync();
 
         // Navigation is generated from the module registry, never hardcoded -
         // a new module appears here automatically, a disabled one disappears
@@ -73,6 +75,10 @@
                                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">@activeReminderCount</span>
                                 }
                             </a>
+                            @if (isOwner)
+                            {
+                                <a asp-controller="Members" asp-action="Index" class="btn btn-outline-secondary btn-sm" aria-label="@Localizer["MembersLink"]" title="@Localizer["MembersLink"]">👥</a>
+                            }
                             <a asp-controller="Modules" asp-action="Index" class="btn btn-outline-secondary btn-sm" aria-label="@Localizer["ModulesLink"]" title="@Localizer["ModulesLink"]">⚙️</a>
                         }
                         <form asp-controller="Home" asp-action="SetLanguage" method="post" class="mb-0">

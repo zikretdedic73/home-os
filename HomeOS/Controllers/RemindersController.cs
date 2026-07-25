@@ -16,12 +16,14 @@ public class RemindersController : Controller
     private readonly ApplicationDbContext _context;
     private readonly ICurrentHouseholdService _household;
     private readonly IStringLocalizer<RemindersController> _localizer;
+    private readonly IRecurrenceService _recurrence;
 
-    public RemindersController(ApplicationDbContext context, ICurrentHouseholdService household, IStringLocalizer<RemindersController> localizer)
+    public RemindersController(ApplicationDbContext context, ICurrentHouseholdService household, IStringLocalizer<RemindersController> localizer, IRecurrenceService recurrence)
     {
         _context = context;
         _household = household;
         _localizer = localizer;
+        _recurrence = recurrence;
     }
 
     // GET: /Reminders
@@ -134,12 +136,38 @@ public class RemindersController : Controller
     public async Task<IActionResult> Resolve(int id)
     {
         var householdId = await _household.GetCurrentHouseholdIdAsync();
-        var reminder = await _context.Reminders.FirstOrDefaultAsync(r => r.Id == id && r.HouseholdId == householdId);
+        var reminder = await _context.Reminders
+            .Include(r => r.Recipients)
+            .FirstOrDefaultAsync(r => r.Id == id && r.HouseholdId == householdId);
 
         if (reminder != null)
         {
             reminder.IsResolved = true;
             reminder.UpdatedAtUtc = DateTime.UtcNow;
+
+            // Recurring reminder (Docs/00 - "ponavljajući podsjetnici"): resolving
+            // one occurrence spawns the next, mirroring the Tasks workflow.
+            var nextTrigger = _recurrence.GetNextOccurrence(reminder.RecurrenceRule, reminder.TriggerAtUtc);
+            if (nextTrigger.HasValue)
+            {
+                var next = new Reminder
+                {
+                    HouseholdId = reminder.HouseholdId,
+                    OwnerId = reminder.OwnerId,
+                    Visibility = reminder.Visibility,
+                    Title = reminder.Title,
+                    TriggerAtUtc = nextTrigger.Value,
+                    RecurrenceRule = reminder.RecurrenceRule,
+                    SourceType = reminder.SourceType,
+                    SourceId = reminder.SourceId,
+                    CreatedAtUtc = DateTime.UtcNow,
+                    Recipients = reminder.Recipients
+                        .Select(rc => new ReminderRecipient { MemberId = rc.MemberId })
+                        .ToList()
+                };
+                _context.Reminders.Add(next);
+            }
+
             await _context.SaveChangesAsync();
         }
 

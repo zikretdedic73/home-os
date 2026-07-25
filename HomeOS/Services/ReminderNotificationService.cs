@@ -72,9 +72,9 @@ public class ReminderNotificationService : IReminderNotificationService
                 }
 
                 // Only mark as notified once the email actually went out - a
-                // failed send (e.g. Resend sandbox restrictions, no API key
-                // yet) should retry on the next due-reminder check rather
-                // than being silently marked as delivered.
+                // failed send (e.g. SMTP not configured yet, transient error)
+                // should retry on the next due-reminder check rather than being
+                // silently marked as delivered.
                 recipient.NotifiedViaEmail = emailSent;
                 recipient.NotifiedInAppAtUtc = nowUtc;
                 anyNotified = true;

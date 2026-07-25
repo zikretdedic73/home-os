@@ -169,6 +169,16 @@
                 searchUrl: '@Url.Action("Index", "Search")'
             };
         </script>
+
+        @* Real-time sync: when another member changes data relevant to this
+           page, refresh it without a manual reload (Docs/00 - sinhronizacija u
+           realnom vremenu). The server broadcasts which module changed; the
+           client reloads only if it is showing related data. *@
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+        <script>
+            window.homeOsRealtime = { currentController: '@currentController' };
+        </script>
+        <script src="~/js/realtime.js" asp-append-version="true"></script>
     }
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

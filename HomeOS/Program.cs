@@ -8,6 +8,7 @@ using HomeOS.Models.Shopping;
 using HomeOS.Models.Tasks;
 using HomeOS.Services;
 using HomeOS.Services.Events;
+using HomeOS.Services.Realtime;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
@@ -82,8 +83,17 @@ builder.Services.AddScoped<ISearchable, ShoppingListSearchProvider>();
 // see Docs/02_Pravila_Programiranja.md, section 5) ---
 builder.Services.AddLocalization();
 
+// --- Real-time (SignalR) - one household-scoped hub; a global filter turns
+// successful mutations into "dataChanged" broadcasts so connected members see
+// changes without a manual reload (Docs/00 - "Sinhronizacija u realnom vremenu").
+builder.Services.AddSignalR();
+builder.Services.AddScoped<HouseholdBroadcastFilter>();
+
 // --- MVC + Razor Pages (Identity default UI uses Razor Pages) ---
-builder.Services.AddControllersWithViews()
+builder.Services.AddControllersWithViews(options =>
+    {
+        options.Filters.Add<HouseholdBroadcastFilter>();
+    })
     .AddViewLocalization()
     .AddDataAnnotationsLocalization();
 builder.Services.AddRazorPages();
@@ -124,5 +134,6 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
+app.MapHub<HouseholdHub>("/hubs/household");
 
 app.Run();

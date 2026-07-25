@@ -41,7 +41,7 @@ public class CalendarController : Controller
         var events = await _context.Events
             .Where(e => e.HouseholdId == householdId && !e.IsDeleted
                 && e.StartsAtUtc < end && e.EndsAtUtc > start)
-            .VisibleTo(memberId)
+            .VisibleTo(memberId, _context.ItemShares, ShareableType.Event)
             .Select(e => new
             {
                 id = $"event-{e.Id}",
@@ -65,7 +65,7 @@ public class CalendarController : Controller
         var tasks = await _context.Tasks
             .Where(t => t.HouseholdId == householdId && !t.IsDeleted
                 && t.DueDate != null && t.DueDate >= start && t.DueDate < end)
-            .VisibleTo(memberId)
+            .VisibleTo(memberId, _context.ItemShares, ShareableType.Task)
             .Select(t => new
             {
                 id = $"task-{t.Id}",

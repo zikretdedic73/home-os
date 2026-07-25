@@ -20,14 +20,16 @@ public class TasksController : Controller
     private readonly IStringLocalizer<TasksController> _localizer;
     private readonly IEventBus _eventBus;
     private readonly ITaskWorkflowService _workflow;
+    private readonly IItemSharingService _sharing;
 
-    public TasksController(ApplicationDbContext context, ICurrentHouseholdService household, IStringLocalizer<TasksController> localizer, IEventBus eventBus, ITaskWorkflowService workflow)
+    public TasksController(ApplicationDbContext context, ICurrentHouseholdService household, IStringLocalizer<TasksController> localizer, IEventBus eventBus, ITaskWorkflowService workflow, IItemSharingService sharing)
     {
         _context = context;
         _household = household;
         _workflow = workflow;
         _localizer = localizer;
         _eventBus = eventBus;
+        _sharing = sharing;
     }
 
     // GET: /Tasks
@@ -38,7 +40,7 @@ public class TasksController : Controller
 
         var query = _context.Tasks
             .Where(t => t.HouseholdId == householdId && !t.IsDeleted)
-            .VisibleTo(memberId)
+            .VisibleTo(memberId, _context.ItemShares, ShareableType.Task)
             .Include(t => t.SubTasks)
             .Include(t => t.TaskTags).ThenInclude(tt => tt.Tag)
             .AsQueryable();
@@ -80,7 +82,7 @@ public class TasksController : Controller
     // POST: /Tasks/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(TaskItem model, string? tagsInput)
+    public async Task<IActionResult> Create(TaskItem model, string? tagsInput, int[]? shareMemberIds)
     {
         var householdId = await _household.GetCurrentHouseholdIdAsync();
 
@@ -98,6 +100,7 @@ public class TasksController : Controller
         await _context.SaveChangesAsync();
 
         await SaveTagsAsync(model, tagsInput, householdId);
+        await SaveSharesAsync(model, shareMemberIds);
 
         // Publish a "key moment" - the Reminders module reacts (auto-creates a
         // reminder at the due date) without Tasks calling it directly.
@@ -136,6 +139,7 @@ public class TasksController : Controller
         ViewBag.TagsInput = string.Join(", ", task.TaskTags
             .Where(tt => tt.Tag != null)
             .Select(tt => tt.Tag!.Name));
+        ViewBag.ShareMemberIds = await _sharing.GetShareMemberIdsAsync(ShareableType.Task, task.Id);
 
         return View(task);
     }
@@ -143,7 +147,7 @@ public class TasksController : Controller
     // POST: /Tasks/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, TaskItem model, string? tagsInput)
+    public async Task<IActionResult> Edit(int id, TaskItem model, string? tagsInput, int[]? shareMemberIds)
     {
         if (id != model.Id) return NotFound();
 
@@ -179,6 +183,7 @@ public class TasksController : Controller
         _context.TaskTags.RemoveRange(task.TaskTags);
         await _context.SaveChangesAsync();
         await SaveTagsAsync(task, tagsInput, householdId);
+        await SaveSharesAsync(task, shareMemberIds);
 
         // Newly assigned (or reassigned) to someone other than the editor ->
         // notify them over the bus (Docs/00 - "dodijeljen zadatak").
@@ -272,6 +277,18 @@ public class TasksController : Controller
             .Where(m => m.HouseholdId == householdId)
             .OrderBy(m => m.DisplayName)
             .ToListAsync();
+    }
+
+    // Persists specific-member shares only when the task is set to
+    // SpecificMembers; any other visibility clears them so stale shares never
+    // linger (Docs/00 - "dijeljeno ... sa specifičnim osobama").
+    private async Task SaveSharesAsync(TaskItem task, int[]? shareMemberIds)
+    {
+        var members = task.Visibility == Visibility.SpecificMembers
+            ? (shareMemberIds ?? Array.Empty<int>())
+            : Array.Empty<int>();
+
+        await _sharing.ReplaceSharesAsync(ShareableType.Task, task.Id, members);
     }
 
     private async Task SaveTagsAsync(TaskItem task, string? tagsInput, int householdId)

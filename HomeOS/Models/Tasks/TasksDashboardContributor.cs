@@ -31,7 +31,7 @@ public class TasksDashboardContributor : IDashboardContributor
             .Where(t => t.HouseholdId == householdId && !t.IsDeleted
                 && t.Status != TaskState.Done
                 && t.DueDate != null && t.DueDate < tomorrowUtc)
-            .VisibleTo(memberId)
+            .VisibleTo(memberId, _context.ItemShares, ShareableType.Task)
             .OrderBy(t => t.DueDate)
             .ToListAsync();
 

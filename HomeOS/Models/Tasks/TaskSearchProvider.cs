@@ -21,7 +21,7 @@ public class TaskSearchProvider : ISearchable
         var matches = await _context.Tasks
             .Where(t => t.HouseholdId == householdId && !t.IsDeleted
                 && (t.Title.Contains(query) || (t.Description != null && t.Description.Contains(query))))
-            .VisibleTo(memberId)
+            .VisibleTo(memberId, _context.ItemShares, ShareableType.Task)
             .ToListAsync();
 
         return matches

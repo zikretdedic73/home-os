@@ -28,7 +28,7 @@ public class ShoppingListsController : Controller
 
         var lists = await _context.ShoppingLists
             .Where(l => l.HouseholdId == householdId && !l.IsDeleted)
-            .VisibleTo(memberId)
+            .VisibleTo(memberId, _context.ItemShares, ShareableType.ShoppingList)
             .Include(l => l.Items)
             .OrderBy(l => l.Name)
             .ToListAsync();

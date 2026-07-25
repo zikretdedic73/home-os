@@ -21,7 +21,7 @@ public class ShoppingListSearchProvider : ISearchable
         var matches = await _context.ShoppingLists
             .Where(l => l.HouseholdId == householdId && !l.IsDeleted
                 && (l.Name.Contains(query) || l.Items.Any(i => i.Name.Contains(query))))
-            .VisibleTo(memberId)
+            .VisibleTo(memberId, _context.ItemShares, ShareableType.ShoppingList)
             .ToListAsync();
 
         return matches

@@ -21,4 +21,10 @@
   <data name="Private" xml:space="preserve">
     <value>Privatno (samo ja)</value>
   </data>
+  <data name="SpecificMembers" xml:space="preserve">
+    <value>Dijeljeno s određenim osobama</value>
+  </data>
+  <data name="SpecificMembersHelp" xml:space="preserve">
+    <value>Odaberite ko ovo može vidjeti</value>
+  </data>
 </root>

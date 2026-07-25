@@ -19,7 +19,7 @@ public class ReminderSearchProvider : ISearchable
     {
         var matches = await _context.Reminders
             .Where(r => r.HouseholdId == householdId && !r.IsDeleted && r.Title.Contains(query))
-            .VisibleTo(memberId)
+            .VisibleTo(memberId, _context.ItemShares, ShareableType.Reminder)
             .ToListAsync();
 
         return matches

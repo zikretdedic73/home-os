@@ -21,7 +21,7 @@ public class NoteSearchProvider : ISearchable
         var matches = await _context.Notes
             .Where(n => n.HouseholdId == householdId && !n.IsDeleted
                 && ((n.Title != null && n.Title.Contains(query)) || n.Content.Contains(query)))
-            .VisibleTo(memberId)
+            .VisibleTo(memberId, _context.ItemShares, ShareableType.Note)
             .ToListAsync();
 
         return matches

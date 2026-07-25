@@ -35,7 +35,7 @@ public class KanbanController : Controller
 
         var tasks = await _context.Tasks
             .Where(t => t.HouseholdId == householdId && !t.IsDeleted)
-            .VisibleTo(memberId)
+            .VisibleTo(memberId, _context.ItemShares, ShareableType.Task)
             .OrderBy(t => t.DueDate == null).ThenBy(t => t.DueDate)
             .ToListAsync();
 
@@ -60,7 +60,7 @@ public class KanbanController : Controller
 
         var task = await _context.Tasks
             .Where(t => t.Id == taskId && t.HouseholdId == householdId && !t.IsDeleted)
-            .VisibleTo(memberId)
+            .VisibleTo(memberId, _context.ItemShares, ShareableType.Task)
             .FirstOrDefaultAsync();
 
         if (task == null)

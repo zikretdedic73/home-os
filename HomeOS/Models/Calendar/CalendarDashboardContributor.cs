@@ -29,7 +29,7 @@ public class CalendarDashboardContributor : IDashboardContributor
         var events = await _context.Events
             .Where(e => e.HouseholdId == householdId && !e.IsDeleted
                 && e.StartsAtUtc < tomorrowUtc && e.EndsAtUtc >= todayUtc)
-            .VisibleTo(memberId)
+            .VisibleTo(memberId, _context.ItemShares, ShareableType.Event)
             .OrderBy(e => e.StartsAtUtc)
             .ToListAsync();
 

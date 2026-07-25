@@ -21,4 +21,10 @@
   <data name="Private" xml:space="preserve">
     <value>Private (only me)</value>
   </data>
+  <data name="SpecificMembers" xml:space="preserve">
+    <value>Shared with specific people</value>
+  </data>
+  <data name="SpecificMembersHelp" xml:space="preserve">
+    <value>Choose who can see this</value>
+  </data>
 </root>

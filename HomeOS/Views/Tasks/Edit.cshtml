@@ -17,8 +17,10 @@
     var visibilityOptions = new List<SelectListItem>
     {
         new(VisLoc["Household"].Value, "Household"),
-        new(VisLoc["Private"].Value, "Private")
+        new(VisLoc["Private"].Value, "Private"),
+        new(VisLoc["SpecificMembers"].Value, "SpecificMembers")
     };
+    var shareMemberIds = ViewBag.ShareMemberIds as List<int> ?? new List<int>();
 }
 
 <h2>@Localizer["PageTitle"]</h2>
@@ -66,13 +68,42 @@
     </div>
     <div class="col-12 col-md-6">
         <label class="form-label">@VisLoc["Label"]</label>
-        <select asp-for="Visibility" class="form-select" asp-items="visibilityOptions"></select>
+        <select asp-for="Visibility" class="form-select" asp-items="visibilityOptions" id="visibilitySelect"></select>
+    </div>
+    <div class="col-12" id="shareMembersBlock" style="@(Model.Visibility == Visibility.SpecificMembers ? "" : "display:none;")">
+        <label class="form-label">@VisLoc["SpecificMembersHelp"]</label>
+        <div class="d-flex flex-wrap gap-3 border rounded p-2">
+            @if (members != null)
+            {
+                foreach (var m in members)
+                {
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="shareMemberIds"
+                               value="@m.Id" id="share_@m.Id" checked="@shareMemberIds.Contains(m.Id)" />
+                        <label class="form-check-label" for="share_@m.Id">@m.DisplayName</label>
+                    </div>
+                }
+            }
+        </div>
     </div>
     <div class="col-12">
         <button type="submit" class="btn btn-primary">@Localizer["SaveChangesButton"]</button>
         <a asp-action="Index" class="btn btn-outline-secondary">@Localizer["BackButton"]</a>
     </div>
 </form>
+
+@section Scripts {
+    <script>
+        (function () {
+            var sel = document.getElementById('visibilitySelect');
+            var block = document.getElementById('shareMembersBlock');
+            if (!sel || !block) return;
+            function sync() { block.style.display = sel.value === 'SpecificMembers' ? '' : 'none'; }
+            sel.addEventListener('change', sync);
+            sync();
+        })();
+    </script>
+}
 
 <hr class="my-4" />
 

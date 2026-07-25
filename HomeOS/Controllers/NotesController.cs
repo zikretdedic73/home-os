@@ -32,7 +32,7 @@ public class NotesController : Controller
 
         var notes = await _context.Notes
             .Where(n => n.HouseholdId == householdId && !n.IsDeleted)
-            .VisibleTo(memberId)
+            .VisibleTo(memberId, _context.ItemShares, ShareableType.Note)
             .Include(n => n.NoteTags).ThenInclude(nt => nt.Tag)
             .OrderByDescending(n => n.UpdatedAtUtc ?? n.CreatedAtUtc)
             .ToListAsync();
@@ -202,13 +202,13 @@ public class NotesController : Controller
 
         ViewBag.LinkableTasks = await _context.Tasks
             .Where(t => t.HouseholdId == householdId && !t.IsDeleted)
-            .VisibleTo(memberId)
+            .VisibleTo(memberId, _context.ItemShares, ShareableType.Task)
             .OrderBy(t => t.Title)
             .ToListAsync();
 
         ViewBag.LinkableEvents = await _context.Events
             .Where(e => e.HouseholdId == householdId && !e.IsDeleted)
-            .VisibleTo(memberId)
+            .VisibleTo(memberId, _context.ItemShares, ShareableType.Event)
             .OrderBy(e => e.Title)
             .ToListAsync();
     }

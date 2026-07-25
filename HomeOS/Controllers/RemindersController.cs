@@ -34,7 +34,7 @@ public class RemindersController : Controller
 
         var reminders = await _context.Reminders
             .Where(r => r.HouseholdId == householdId && !r.IsDeleted)
-            .VisibleTo(memberId)
+            .VisibleTo(memberId, _context.ItemShares, ShareableType.Reminder)
             .Include(r => r.Recipients)
             .OrderBy(r => r.IsResolved)
             .ThenBy(r => r.TriggerAtUtc)

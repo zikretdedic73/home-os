@@ -33,6 +33,7 @@ builder.Services.AddHttpClient<IEmailSender, ResendEmailSender>();
 builder.Services.AddScoped<IReminderNotificationService, ReminderNotificationService>();
 builder.Services.AddScoped<ITaskWorkflowService, TaskWorkflowService>();
 builder.Services.AddScoped<INotificationPreferenceService, NotificationPreferenceService>();
+builder.Services.AddScoped<IItemSharingService, ItemSharingService>();
 
 // --- Event bus - modules publish "key moments" and others react, without
 // direct dependency (Docs/00_Specifikacija_Izvor.md, "Kooperacija bez direktne

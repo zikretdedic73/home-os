@@ -20,7 +20,7 @@ public class EventSearchProvider : ISearchable
         var matches = await _context.Events
             .Where(e => e.HouseholdId == householdId && !e.IsDeleted
                 && (e.Title.Contains(query) || (e.Location != null && e.Location.Contains(query))))
-            .VisibleTo(memberId)
+            .VisibleTo(memberId, _context.ItemShares, ShareableType.Event)
             .ToListAsync();
 
         return matches

@@ -1,4 +1,5 @@
 using HomeOS.Models.Calendar;
+using HomeOS.Models.Common;
 using HomeOS.Models.Households;
 using HomeOS.Models.Modules;
 using HomeOS.Models.Notes;
@@ -39,6 +40,7 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     public DbSet<ShoppingList> ShoppingLists => Set<ShoppingList>();
     public DbSet<ShoppingListItem> ShoppingListItems => Set<ShoppingListItem>();
     public DbSet<MemberNotificationPreference> MemberNotificationPreferences => Set<MemberNotificationPreference>();
+    public DbSet<ItemShare> ItemShares => Set<ItemShare>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -114,5 +116,9 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
         // One preference row per (member, category).
         builder.Entity<MemberNotificationPreference>()
             .HasIndex(p => new { p.MemberId, p.Category }).IsUnique();
+
+        // One share row per (type, item, member); look-ups filter by type+item.
+        builder.Entity<ItemShare>()
+            .HasIndex(s => new { s.Type, s.ItemId, s.MemberId }).IsUnique();
     }
 }

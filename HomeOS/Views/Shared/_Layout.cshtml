@@ -82,6 +82,7 @@
                             }
                             <a asp-controller="Modules" asp-action="Index" class="btn btn-outline-secondary btn-sm" aria-label="@Localizer["ModulesLink"]" title="@Localizer["ModulesLink"]">⚙️</a>
                         }
+                        <a asp-controller="NotificationSettings" asp-action="Index" class="btn btn-outline-secondary btn-sm" aria-label="@Localizer["NotificationSettingsLink"]" title="@Localizer["NotificationSettingsLink"]">🔔⚙️</a>
                         <form asp-controller="Home" asp-action="SetLanguage" method="post" class="mb-0">
                             <input type="hidden" name="returnUrl" value="@returnUrl" />
                             <select name="culture" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()" aria-label="@Localizer["LanguageSwitcherLabel"]">

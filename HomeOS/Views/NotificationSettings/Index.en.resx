@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="PageTitle" xml:space="preserve">
+    <value>Notification settings</value>
+  </data>
+  <data name="Intro" xml:space="preserve">
+    <value>Choose which notifications you want to receive by email. These settings are personal to you.</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Category_ReminderDue" xml:space="preserve">
+    <value>Reminder due</value>
+  </data>
+  <data name="CategoryHelp_ReminderDue" xml:space="preserve">
+    <value>When one of your reminders reaches its time.</value>
+  </data>
+  <data name="Category_TaskAssigned" xml:space="preserve">
+    <value>Task assigned to me</value>
+  </data>
+  <data name="CategoryHelp_TaskAssigned" xml:space="preserve">
+    <value>When another member assigns a task to you.</value>
+  </data>
+  <data name="Category_BillDue" xml:space="preserve">
+    <value>Bill about to be charged</value>
+  </data>
+  <data name="CategoryHelp_BillDue" xml:space="preserve">
+    <value>When a bill is approaching its due date.</value>
+  </data>
+  <data name="Category_SharedContent" xml:space="preserve">
+    <value>Content shared with me</value>
+  </data>
+  <data name="CategoryHelp_SharedContent" xml:space="preserve">
+    <value>When someone shares an item specifically with you.</value>
+  </data>
+</root>

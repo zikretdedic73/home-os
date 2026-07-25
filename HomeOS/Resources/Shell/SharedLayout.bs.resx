@@ -24,6 +24,9 @@
   <data name="ModulesLink" xml:space="preserve">
     <value>Moduli</value>
   </data>
+  <data name="NotificationSettingsLink" xml:space="preserve">
+    <value>Podešavanja obavještenja</value>
+  </data>
   <data name="MembersLink" xml:space="preserve">
     <value>Članovi domaćinstva</value>
   </data>

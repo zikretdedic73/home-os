@@ -107,6 +107,15 @@ public class TasksController : Controller
                 householdId, model.Id, model.OwnerId, model.Title, model.DueDate.Value));
         }
 
+        // Assigned to someone -> the notification handler emails them (Docs/00 -
+        // "dodijeljen zadatak"). Skip self-assignment: no point emailing the
+        // creator about a task they just created for themselves.
+        if (model.AssigneeId.HasValue && model.AssigneeId.Value != model.OwnerId)
+        {
+            await _eventBus.PublishAsync(new TaskAssignedEvent(
+                householdId, model.Id, model.AssigneeId.Value, model.Title, model.DueDate));
+        }
+
         TempData["Success"] = _localizer["TaskCreatedSuccessMessage"].Value;
         return RedirectToAction(nameof(Index));
     }
@@ -153,6 +162,8 @@ public class TasksController : Controller
             return View(model);
         }
 
+        var previousAssigneeId = task.AssigneeId;
+
         task.Title = model.Title;
         task.Description = model.Description;
         task.DueDate = model.DueDate;
@@ -168,6 +179,17 @@ public class TasksController : Controller
         _context.TaskTags.RemoveRange(task.TaskTags);
         await _context.SaveChangesAsync();
         await SaveTagsAsync(task, tagsInput, householdId);
+
+        // Newly assigned (or reassigned) to someone other than the editor ->
+        // notify them over the bus (Docs/00 - "dodijeljen zadatak").
+        var currentMemberId = await _household.GetCurrentMemberIdAsync();
+        if (task.AssigneeId.HasValue
+            && task.AssigneeId != previousAssigneeId
+            && task.AssigneeId.Value != currentMemberId)
+        {
+            await _eventBus.PublishAsync(new TaskAssignedEvent(
+                householdId, task.Id, task.AssigneeId.Value, task.Title, task.DueDate));
+        }
 
         TempData["Success"] = _localizer["TaskUpdatedSuccessMessage"].Value;
         return RedirectToAction(nameof(Index));

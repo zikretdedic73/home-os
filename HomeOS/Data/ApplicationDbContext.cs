@@ -2,6 +2,7 @@ using HomeOS.Models.Calendar;
 using HomeOS.Models.Households;
 using HomeOS.Models.Modules;
 using HomeOS.Models.Notes;
+using HomeOS.Models.Notifications;
 using HomeOS.Models.Reminders;
 using HomeOS.Models.Shopping;
 using HomeOS.Models.Tasks;
@@ -37,6 +38,7 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     public DbSet<NoteTag> NoteTags => Set<NoteTag>();
     public DbSet<ShoppingList> ShoppingLists => Set<ShoppingList>();
     public DbSet<ShoppingListItem> ShoppingListItems => Set<ShoppingListItem>();
+    public DbSet<MemberNotificationPreference> MemberNotificationPreferences => Set<MemberNotificationPreference>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -108,5 +110,9 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
             .HasOne(i => i.ShoppingList).WithMany(l => l.Items)
             .HasForeignKey(i => i.ShoppingListId).OnDelete(DeleteBehavior.Cascade);
         builder.Entity<ShoppingList>().HasIndex(l => l.HouseholdId);
+
+        // One preference row per (member, category).
+        builder.Entity<MemberNotificationPreference>()
+            .HasIndex(p => new { p.MemberId, p.Category }).IsUnique();
     }
 }

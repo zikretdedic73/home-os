@@ -1,4 +1,5 @@
 using HomeOS.Data;
+using HomeOS.Models.Notifications;
 using HomeOS.Models.Reminders;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,17 +12,20 @@ public class ReminderNotificationService : IReminderNotificationService
     private readonly ApplicationDbContext _context;
     private readonly IEmailSender _emailSender;
     private readonly UserManager<IdentityUser> _userManager;
+    private readonly INotificationPreferenceService _preferences;
     private readonly IStringLocalizer<ReminderNotificationService> _localizer;
 
     public ReminderNotificationService(
         ApplicationDbContext context,
         IEmailSender emailSender,
         UserManager<IdentityUser> userManager,
+        INotificationPreferenceService preferences,
         IStringLocalizer<ReminderNotificationService> localizer)
     {
         _context = context;
         _emailSender = emailSender;
         _userManager = userManager;
+        _preferences = preferences;
         _localizer = localizer;
     }
 
@@ -45,7 +49,10 @@ public class ReminderNotificationService : IReminderNotificationService
                 var user = member == null ? null : await _userManager.FindByIdAsync(member.IdentityUserId);
 
                 var emailSent = false;
-                if (user?.Email != null)
+                // Respect the recipient's per-category setting (Docs/00 -
+                // "uključivanje/isključivanje kategorija obavještenja").
+                var wantsEmail = await _preferences.IsEnabledAsync(recipient.MemberId, NotificationCategory.ReminderDue);
+                if (user?.Email != null && wantsEmail)
                 {
                     var subject = string.Format(_localizer["ReminderDueEmailSubject"], reminder.Title);
                     var body = string.Format(

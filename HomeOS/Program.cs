@@ -32,12 +32,14 @@ builder.Services.Configure<ResendOptions>(builder.Configuration.GetSection("Rese
 builder.Services.AddHttpClient<IEmailSender, ResendEmailSender>();
 builder.Services.AddScoped<IReminderNotificationService, ReminderNotificationService>();
 builder.Services.AddScoped<ITaskWorkflowService, TaskWorkflowService>();
+builder.Services.AddScoped<INotificationPreferenceService, NotificationPreferenceService>();
 
 // --- Event bus - modules publish "key moments" and others react, without
 // direct dependency (Docs/00_Specifikacija_Izvor.md, "Kooperacija bez direktne
 // zavisnosti"). Each subscription is one AddScoped<IEventHandler<T>, ...> line. ---
 builder.Services.AddScoped<IEventBus, InProcessEventBus>();
 builder.Services.AddScoped<IEventHandler<TaskWithDueDateCreatedEvent>, TaskWithDueDateCreatedHandler>();
+builder.Services.AddScoped<IEventHandler<TaskAssignedEvent>, TaskAssignedEmailHandler>();
 
 // --- Module registry - each module registers a descriptor (nav/search/module
 // manager are generated from these, never hardcoded) and its ISearchable

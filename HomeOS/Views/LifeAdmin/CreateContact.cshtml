@@ -1,0 +1,15 @@
+@using HomeOS.Models.LifeAdmin
+@model Contact
+@inject Microsoft.Extensions.Localization.IStringLocalizer<HomeOS.Controllers.LifeAdminController> L
+@{ ViewData["Title"] = L["NewContactTitle"]; }
+
+<h2>@L["NewContactTitle"]</h2>
+
+<form asp-action="CreateContact" method="post" class="row g-3 mt-2">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <partial name="_ContactFields" model="Model" />
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">@L["SaveButton"]</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">@L["CancelButton"]</a>
+    </div>
+</form>

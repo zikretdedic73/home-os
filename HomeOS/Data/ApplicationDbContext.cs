@@ -2,6 +2,7 @@ using HomeOS.Models.Calendar;
 using HomeOS.Models.Common;
 using HomeOS.Models.Finance;
 using HomeOS.Models.Households;
+using HomeOS.Models.LifeAdmin;
 using HomeOS.Models.Modules;
 using HomeOS.Models.Notes;
 using HomeOS.Models.Notifications;
@@ -47,6 +48,8 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     public DbSet<ExpenseShare> ExpenseShares => Set<ExpenseShare>();
     public DbSet<Budget> Budgets => Set<Budget>();
     public DbSet<Bill> Bills => Set<Bill>();
+    public DbSet<Document> Documents => Set<Document>();
+    public DbSet<Contact> Contacts => Set<Contact>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -146,5 +149,9 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
         builder.Entity<Budget>()
             .HasOne(b => b.Category).WithMany()
             .HasForeignKey(b => b.CategoryId).OnDelete(DeleteBehavior.Cascade);
+
+        // --- Life Admin ---
+        builder.Entity<Document>().HasIndex(d => d.HouseholdId);
+        builder.Entity<Contact>().HasIndex(c => c.HouseholdId);
     }
 }

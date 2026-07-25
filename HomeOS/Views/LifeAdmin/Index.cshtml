@@ -1,0 +1,92 @@
+@using HomeOS.Models.LifeAdmin
+@inject Microsoft.Extensions.Localization.IStringLocalizer<HomeOS.Controllers.LifeAdminController> L
+@{
+    ViewData["Title"] = L["PageTitle"];
+    var documents = ViewBag.Documents as List<Document> ?? new List<Document>();
+    var contacts = ViewBag.Contacts as List<Contact> ?? new List<Contact>();
+    var today = DateOnly.FromDateTime(DateTime.UtcNow.Date);
+}
+
+<h2 class="mb-3">@L["PageTitle"]</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">@TempData["Success"]</div>
+}
+
+<div class="row g-4">
+    <div class="col-12 col-lg-6">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="mb-0">@L["DocumentsHeading"]</h5>
+            <a asp-action="CreateDocument" class="btn btn-primary btn-sm">@L["AddDocumentButton"]</a>
+        </div>
+        @if (!documents.Any())
+        {
+            <p class="text-muted">@L["NoDocuments"]</p>
+        }
+        else
+        {
+            <ul class="list-group">
+                @foreach (var d in documents)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="fw-medium">@d.Name</div>
+                            <div class="small text-muted">
+                                @if (!string.IsNullOrEmpty(d.Category)) { <span>@d.Category</span> }
+                                @if (d.ExpiryDate.HasValue)
+                                {
+                                    <span class="ms-1 @(d.ExpiryDate.Value < today ? "text-danger fw-bold" : "")">
+                                        · @L["ExpiresLabel"] @d.ExpiryDate.Value.ToString("dd.MM.yyyy")
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                        <div class="text-nowrap">
+                            <a asp-action="EditDocument" asp-route-id="@d.Id" class="btn btn-outline-secondary btn-sm">@L["EditLink"]</a>
+                            <form asp-action="DeleteDocument" method="post" class="d-inline" onsubmit="return confirm('@L["DeleteLink"]?');">
+                                <input type="hidden" name="id" value="@d.Id" />
+                                <button type="submit" class="btn btn-outline-danger btn-sm">@L["DeleteLink"]</button>
+                            </form>
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+
+    <div class="col-12 col-lg-6">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="mb-0">@L["ContactsHeading"]</h5>
+            <a asp-action="CreateContact" class="btn btn-primary btn-sm">@L["AddContactButton"]</a>
+        </div>
+        @if (!contacts.Any())
+        {
+            <p class="text-muted">@L["NoContacts"]</p>
+        }
+        else
+        {
+            <ul class="list-group">
+                @foreach (var c in contacts)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="fw-medium">@c.Name @if (!string.IsNullOrEmpty(c.Role)) { <span class="text-muted small">— @c.Role</span> }</div>
+                            <div class="small text-muted">
+                                @if (!string.IsNullOrEmpty(c.Phone)) { <span>📞 @c.Phone</span> }
+                                @if (!string.IsNullOrEmpty(c.Email)) { <span class="ms-2">✉️ @c.Email</span> }
+                            </div>
+                        </div>
+                        <div class="text-nowrap">
+                            <a asp-action="EditContact" asp-route-id="@c.Id" class="btn btn-outline-secondary btn-sm">@L["EditLink"]</a>
+                            <form asp-action="DeleteContact" method="post" class="d-inline" onsubmit="return confirm('@L["DeleteLink"]?');">
+                                <input type="hidden" name="id" value="@c.Id" />
+                                <button type="submit" class="btn btn-outline-danger btn-sm">@L["DeleteLink"]</button>
+                            </form>
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+</div>

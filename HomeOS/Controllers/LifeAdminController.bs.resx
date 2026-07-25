@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="DocumentSaved" xml:space="preserve"><value>Dokument sačuvan.</value></data>
+  <data name="ContactSaved" xml:space="preserve"><value>Kontakt sačuvan.</value></data>
+
+  <data name="PageTitle" xml:space="preserve"><value>Kućna administracija</value></data>
+  <data name="DocumentsHeading" xml:space="preserve"><value>Dokumenti</value></data>
+  <data name="ContactsHeading" xml:space="preserve"><value>Kontakti</value></data>
+  <data name="AddDocumentButton" xml:space="preserve"><value>Dodaj dokument</value></data>
+  <data name="AddContactButton" xml:space="preserve"><value>Dodaj kontakt</value></data>
+  <data name="NoDocuments" xml:space="preserve"><value>Još nema dokumenata.</value></data>
+  <data name="NoContacts" xml:space="preserve"><value>Još nema kontakata.</value></data>
+  <data name="ExpiresLabel" xml:space="preserve"><value>Ističe</value></data>
+  <data name="EditLink" xml:space="preserve"><value>Izmijeni</value></data>
+  <data name="DeleteLink" xml:space="preserve"><value>Obriši</value></data>
+
+  <data name="NewDocumentTitle" xml:space="preserve"><value>Novi dokument</value></data>
+  <data name="EditDocumentTitle" xml:space="preserve"><value>Izmjena dokumenta</value></data>
+  <data name="NewContactTitle" xml:space="preserve"><value>Novi kontakt</value></data>
+  <data name="EditContactTitle" xml:space="preserve"><value>Izmjena kontakta</value></data>
+
+  <data name="NameLabel" xml:space="preserve"><value>Naziv</value></data>
+  <data name="CategoryLabel" xml:space="preserve"><value>Kategorija</value></data>
+  <data name="ExpiryLabel" xml:space="preserve"><value>Datum isteka</value></data>
+  <data name="NotesLabel" xml:space="preserve"><value>Bilješke</value></data>
+  <data name="RoleLabel" xml:space="preserve"><value>Uloga</value></data>
+  <data name="PhoneLabel" xml:space="preserve"><value>Telefon</value></data>
+  <data name="EmailLabel" xml:space="preserve"><value>E-mail</value></data>
+
+  <data name="SaveButton" xml:space="preserve"><value>Sačuvaj</value></data>
+  <data name="CancelButton" xml:space="preserve"><value>Otkaži</value></data>
+  <data name="BackButton" xml:space="preserve"><value>Nazad</value></data>
+</root>

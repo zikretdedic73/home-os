@@ -1,0 +1,39 @@
+@using HomeOS.Models.LifeAdmin
+@using HomeOS.Models.Common
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model Contact
+@inject Microsoft.Extensions.Localization.IStringLocalizer<HomeOS.Controllers.LifeAdminController> L
+@inject Microsoft.Extensions.Localization.IStringLocalizer<VisibilityLabels> VisLoc
+@{
+    var visibilityOptions = new List<SelectListItem>
+    {
+        new(VisLoc["Household"].Value, "Household"),
+        new(VisLoc["Private"].Value, "Private")
+    };
+}
+
+<div class="col-12 col-md-6">
+    <label class="form-label">@L["NameLabel"]</label>
+    <input asp-for="Name" class="form-control" required />
+    <span asp-validation-for="Name" class="text-danger"></span>
+</div>
+<div class="col-12 col-md-6">
+    <label class="form-label">@L["RoleLabel"]</label>
+    <input asp-for="Role" class="form-control" />
+</div>
+<div class="col-6 col-md-4">
+    <label class="form-label">@L["PhoneLabel"]</label>
+    <input asp-for="Phone" class="form-control" />
+</div>
+<div class="col-6 col-md-4">
+    <label class="form-label">@L["EmailLabel"]</label>
+    <input asp-for="Email" type="email" class="form-control" />
+</div>
+<div class="col-12 col-md-4">
+    <label class="form-label">@VisLoc["Label"]</label>
+    <select asp-for="Visibility" class="form-select" asp-items="visibilityOptions"></select>
+</div>
+<div class="col-12">
+    <label class="form-label">@L["NotesLabel"]</label>
+    <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+</div>

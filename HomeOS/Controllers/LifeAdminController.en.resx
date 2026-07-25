@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="DocumentSaved" xml:space="preserve"><value>Document saved.</value></data>
+  <data name="ContactSaved" xml:space="preserve"><value>Contact saved.</value></data>
+
+  <data name="PageTitle" xml:space="preserve"><value>Life Admin</value></data>
+  <data name="DocumentsHeading" xml:space="preserve"><value>Documents</value></data>
+  <data name="ContactsHeading" xml:space="preserve"><value>Contacts</value></data>
+  <data name="AddDocumentButton" xml:space="preserve"><value>Add document</value></data>
+  <data name="AddContactButton" xml:space="preserve"><value>Add contact</value></data>
+  <data name="NoDocuments" xml:space="preserve"><value>No documents yet.</value></data>
+  <data name="NoContacts" xml:space="preserve"><value>No contacts yet.</value></data>
+  <data name="ExpiresLabel" xml:space="preserve"><value>Expires</value></data>
+  <data name="EditLink" xml:space="preserve"><value>Edit</value></data>
+  <data name="DeleteLink" xml:space="preserve"><value>Delete</value></data>
+
+  <data name="NewDocumentTitle" xml:space="preserve"><value>New document</value></data>
+  <data name="EditDocumentTitle" xml:space="preserve"><value>Edit document</value></data>
+  <data name="NewContactTitle" xml:space="preserve"><value>New contact</value></data>
+  <data name="EditContactTitle" xml:space="preserve"><value>Edit contact</value></data>
+
+  <data name="NameLabel" xml:space="preserve"><value>Name</value></data>
+  <data name="CategoryLabel" xml:space="preserve"><value>Category</value></data>
+  <data name="ExpiryLabel" xml:space="preserve"><value>Expiry date</value></data>
+  <data name="NotesLabel" xml:space="preserve"><value>Notes</value></data>
+  <data name="RoleLabel" xml:space="preserve"><value>Role</value></data>
+  <data name="PhoneLabel" xml:space="preserve"><value>Phone</value></data>
+  <data name="EmailLabel" xml:space="preserve"><value>Email</value></data>
+
+  <data name="SaveButton" xml:space="preserve"><value>Save</value></data>
+  <data name="CancelButton" xml:space="preserve"><value>Cancel</value></data>
+  <data name="BackButton" xml:space="preserve"><value>Back</value></data>
+</root>

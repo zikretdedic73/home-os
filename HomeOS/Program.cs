@@ -3,6 +3,7 @@ using HomeOS.Models.Calendar;
 using HomeOS.Models.Events;
 using HomeOS.Models.Finance;
 using HomeOS.Models.Kanban;
+using HomeOS.Models.LifeAdmin;
 using HomeOS.Models.Notes;
 using HomeOS.Models.Reminders;
 using HomeOS.Models.Shopping;
@@ -47,6 +48,7 @@ builder.Services.AddScoped<IEventBus, InProcessEventBus>();
 builder.Services.AddScoped<IEventHandler<TaskWithDueDateCreatedEvent>, TaskWithDueDateCreatedHandler>();
 builder.Services.AddScoped<IEventHandler<TaskAssignedEvent>, TaskAssignedEmailHandler>();
 builder.Services.AddScoped<IEventHandler<BillDueDateCreatedEvent>, BillDueReminderHandler>();
+builder.Services.AddScoped<IEventHandler<DocumentExpiryCreatedEvent>, DocumentExpiryReminderHandler>();
 
 // --- Module registry - each module registers a descriptor (nav/search/module
 // manager are generated from these, never hardcoded) and its ISearchable
@@ -84,6 +86,10 @@ builder.Services.AddScoped<ISearchable, ShoppingListSearchProvider>();
 builder.Services.AddScoped<IModuleDescriptor, FinanceModule>();
 builder.Services.AddScoped<ISearchable, FinanceSearchProvider>();
 builder.Services.AddScoped<IDashboardContributor, FinanceDashboardContributor>();
+
+builder.Services.AddScoped<IModuleDescriptor, LifeAdminModule>();
+builder.Services.AddScoped<ISearchable, LifeAdminSearchProvider>();
+builder.Services.AddScoped<IDashboardContributor, LifeAdminDashboardContributor>();
 
 // --- Localization (Shell provides the mechanism, each module owns its own .resx -
 // see Docs/02_Pravila_Programiranja.md, section 5) ---

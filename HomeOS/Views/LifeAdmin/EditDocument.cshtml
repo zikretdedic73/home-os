@@ -1,0 +1,16 @@
+@using HomeOS.Models.LifeAdmin
+@model Document
+@inject Microsoft.Extensions.Localization.IStringLocalizer<HomeOS.Controllers.LifeAdminController> L
+@{ ViewData["Title"] = L["EditDocumentTitle"]; }
+
+<h2>@L["EditDocumentTitle"]</h2>
+
+<form asp-action="EditDocument" asp-route-id="@Model.Id" method="post" class="row g-3 mt-2">
+    <input type="hidden" asp-for="Id" />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <partial name="_DocumentFields" model="Model" />
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">@L["SaveButton"]</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">@L["BackButton"]</a>
+    </div>
+</form>

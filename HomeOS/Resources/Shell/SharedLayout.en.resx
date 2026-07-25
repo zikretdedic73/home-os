@@ -69,6 +69,9 @@
   <data name="QuickCaptureReminderOption" xml:space="preserve">
     <value>Reminder</value>
   </data>
+  <data name="QuickCaptureNoteOption" xml:space="preserve">
+    <value>Note</value>
+  </data>
   <data name="QuickCaptureTitleLabel" xml:space="preserve">
     <value>Title</value>
   </data>

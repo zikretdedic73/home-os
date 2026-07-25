@@ -3,6 +3,7 @@ using HomeOS.Data;
 using HomeOS.Models;
 using HomeOS.Models.Events;
 using HomeOS.Models.Home;
+using HomeOS.Models.Notes;
 using HomeOS.Models.Reminders;
 using HomeOS.Models.Tasks;
 using HomeOS.Services;
@@ -98,8 +99,8 @@ namespace HomeOS.Controllers
         }
 
         // Quick Capture - available from every screen via the navbar (Docs/01_Roadmap.md,
-        // section 2.1). Only Tasks and Reminders exist so far; Notes is added
-        // once that module exists (Day 3), without changing this action's shape.
+        // section 2.1). Captures a task, reminder or note (Docs/00 - "brzo dodavanje
+        // zadatka, bilješke ili podsjetnika").
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -123,6 +124,18 @@ namespace HomeOS.Controllers
                     _context.Reminders.Add(reminder);
                     await _context.SaveChangesAsync();
                     _context.ReminderRecipients.Add(new ReminderRecipient { ReminderId = reminder.Id, MemberId = memberId });
+                    await _context.SaveChangesAsync();
+                }
+                else if (type == "note")
+                {
+                    var note = new Note
+                    {
+                        HouseholdId = householdId,
+                        OwnerId = memberId,
+                        Title = title.Trim(),
+                        Content = title.Trim()
+                    };
+                    _context.Notes.Add(note);
                     await _context.SaveChangesAsync();
                 }
                 else

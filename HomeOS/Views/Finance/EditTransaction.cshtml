@@ -1,0 +1,20 @@
+@using HomeOS.Models.Finance
+@model Transaction
+@inject Microsoft.Extensions.Localization.IStringLocalizer<HomeOS.Controllers.FinanceController> L
+@{
+    ViewData["Title"] = L["EditTransactionTitle"];
+}
+
+<h2>@L["EditTransactionTitle"]</h2>
+
+<form asp-action="EditTransaction" asp-route-id="@Model.Id" method="post" class="row g-3 mt-2">
+    <input type="hidden" asp-for="Id" />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <partial name="_TransactionFields" model="Model" />
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">@L["SaveButton"]</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">@L["BackButton"]</a>
+    </div>
+</form>
+
+@section Scripts { <partial name="_TransactionFormScripts" /> }

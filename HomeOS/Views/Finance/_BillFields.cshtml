@@ -1,0 +1,41 @@
+@using HomeOS.Models.Finance
+@using HomeOS.Models.Common
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model Bill
+@inject Microsoft.Extensions.Localization.IStringLocalizer<HomeOS.Controllers.FinanceController> L
+@inject Microsoft.Extensions.Localization.IStringLocalizer<VisibilityLabels> VisLoc
+@{
+    var recurrenceOptions = new List<SelectListItem>
+    {
+        new(L["RecurrenceNone"].Value, ""),
+        new(L["RecurrenceMonthly"].Value, "monthly"),
+        new(L["RecurrenceYearly"].Value, "yearly")
+    };
+    var visibilityOptions = new List<SelectListItem>
+    {
+        new(VisLoc["Household"].Value, "Household"),
+        new(VisLoc["Private"].Value, "Private")
+    };
+}
+
+<div class="col-12 col-md-6">
+    <label class="form-label">@L["BillNameLabel"]</label>
+    <input asp-for="Name" class="form-control" required />
+    <span asp-validation-for="Name" class="text-danger"></span>
+</div>
+<div class="col-6 col-md-3">
+    <label class="form-label">@L["AmountLabel"]</label>
+    <input asp-for="Amount" type="number" step="0.01" min="0" class="form-control" required />
+</div>
+<div class="col-6 col-md-3">
+    <label class="form-label">@L["DueDateLabel"]</label>
+    <input asp-for="DueDate" type="date" class="form-control" />
+</div>
+<div class="col-6 col-md-4">
+    <label class="form-label">@L["RecurrenceLabel"]</label>
+    <select asp-for="RecurrenceRule" class="form-select" asp-items="recurrenceOptions"></select>
+</div>
+<div class="col-6 col-md-4">
+    <label class="form-label">@VisLoc["Label"]</label>
+    <select asp-for="Visibility" class="form-select" asp-items="visibilityOptions"></select>
+</div>

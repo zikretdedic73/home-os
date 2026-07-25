@@ -1,5 +1,6 @@
 using HomeOS.Models.Calendar;
 using HomeOS.Models.Common;
+using HomeOS.Models.Finance;
 using HomeOS.Models.Households;
 using HomeOS.Models.Modules;
 using HomeOS.Models.Notes;
@@ -41,6 +42,11 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     public DbSet<ShoppingListItem> ShoppingListItems => Set<ShoppingListItem>();
     public DbSet<MemberNotificationPreference> MemberNotificationPreferences => Set<MemberNotificationPreference>();
     public DbSet<ItemShare> ItemShares => Set<ItemShare>();
+    public DbSet<Category> Categories => Set<Category>();
+    public DbSet<Transaction> Transactions => Set<Transaction>();
+    public DbSet<ExpenseShare> ExpenseShares => Set<ExpenseShare>();
+    public DbSet<Budget> Budgets => Set<Budget>();
+    public DbSet<Bill> Bills => Set<Bill>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -120,5 +126,25 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
         // One share row per (type, item, member); look-ups filter by type+item.
         builder.Entity<ItemShare>()
             .HasIndex(s => new { s.Type, s.ItemId, s.MemberId }).IsUnique();
+
+        // --- Finance ---
+        builder.Entity<Category>().HasIndex(c => c.HouseholdId);
+        builder.Entity<Transaction>().HasIndex(t => t.HouseholdId);
+        builder.Entity<Bill>().HasIndex(b => b.HouseholdId);
+        builder.Entity<Budget>().HasIndex(b => new { b.HouseholdId, b.CategoryId }).IsUnique();
+
+        builder.Entity<Transaction>()
+            .HasOne(t => t.Category).WithMany(c => c.Transactions)
+            .HasForeignKey(t => t.CategoryId).OnDelete(DeleteBehavior.SetNull);
+
+        builder.Entity<ExpenseShare>()
+            .HasOne(s => s.Transaction).WithMany(t => t.Shares)
+            .HasForeignKey(s => s.TransactionId).OnDelete(DeleteBehavior.Cascade);
+
+        // Deleting a category should not cascade-delete its budget rows silently;
+        // budgets are cleaned up in app code when a category is removed.
+        builder.Entity<Budget>()
+            .HasOne(b => b.Category).WithMany()
+            .HasForeignKey(b => b.CategoryId).OnDelete(DeleteBehavior.Cascade);
     }
 }

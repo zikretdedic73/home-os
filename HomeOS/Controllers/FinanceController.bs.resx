@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="TransactionSaved" xml:space="preserve"><value>Transakcija sačuvana.</value></data>
+  <data name="BillSaved" xml:space="preserve"><value>Račun sačuvan.</value></data>
+
+  <data name="PageTitle" xml:space="preserve"><value>Finansije</value></data>
+  <data name="IncomeLabel" xml:space="preserve"><value>Prihodi</value></data>
+  <data name="ExpenseLabel" xml:space="preserve"><value>Troškovi</value></data>
+  <data name="NetLabel" xml:space="preserve"><value>Neto</value></data>
+
+  <data name="BudgetsHeading" xml:space="preserve"><value>Kategorije i budžeti (ovaj mjesec)</value></data>
+  <data name="AddCategoryPlaceholder" xml:space="preserve"><value>Naziv nove kategorije</value></data>
+  <data name="AddButton" xml:space="preserve"><value>Dodaj</value></data>
+  <data name="SetButton" xml:space="preserve"><value>Postavi</value></data>
+  <data name="NoBudget" xml:space="preserve"><value>bez budžeta</value></data>
+  <data name="SpentOf" xml:space="preserve"><value>{0} od {1}</value></data>
+  <data name="NoCategories" xml:space="preserve"><value>Još nema kategorija. Dodajte jednu da počnete pratiti troškove.</value></data>
+
+  <data name="RecentHeading" xml:space="preserve"><value>Nedavne transakcije</value></data>
+  <data name="AddTransactionButton" xml:space="preserve"><value>Dodaj transakciju</value></data>
+  <data name="NoTransactions" xml:space="preserve"><value>Još nema transakcija.</value></data>
+
+  <data name="BillsHeading" xml:space="preserve"><value>Računi</value></data>
+  <data name="AddBillButton" xml:space="preserve"><value>Dodaj račun</value></data>
+  <data name="NoBills" xml:space="preserve"><value>Još nema računa.</value></data>
+  <data name="PaidBadge" xml:space="preserve"><value>Plaćeno</value></data>
+  <data name="MarkPaidButton" xml:space="preserve"><value>Označi plaćeno</value></data>
+
+  <data name="ColDescription" xml:space="preserve"><value>Opis</value></data>
+  <data name="ColAmount" xml:space="preserve"><value>Iznos</value></data>
+  <data name="ColCategory" xml:space="preserve"><value>Kategorija</value></data>
+  <data name="ColDate" xml:space="preserve"><value>Datum</value></data>
+  <data name="ColType" xml:space="preserve"><value>Tip</value></data>
+  <data name="ColName" xml:space="preserve"><value>Naziv</value></data>
+  <data name="ColDue" xml:space="preserve"><value>Dospijeće</value></data>
+  <data name="ColActions" xml:space="preserve"><value>Akcije</value></data>
+  <data name="EditLink" xml:space="preserve"><value>Izmijeni</value></data>
+  <data name="DeleteLink" xml:space="preserve"><value>Obriši</value></data>
+
+  <data name="NewTransactionTitle" xml:space="preserve"><value>Nova transakcija</value></data>
+  <data name="EditTransactionTitle" xml:space="preserve"><value>Izmjena transakcije</value></data>
+  <data name="DescriptionLabel" xml:space="preserve"><value>Opis</value></data>
+  <data name="AmountLabel" xml:space="preserve"><value>Iznos</value></data>
+  <data name="TypeLabel" xml:space="preserve"><value>Tip</value></data>
+  <data name="CategoryLabel" xml:space="preserve"><value>Kategorija</value></data>
+  <data name="NoCategoryOption" xml:space="preserve"><value>(bez)</value></data>
+  <data name="DateLabel" xml:space="preserve"><value>Datum</value></data>
+  <data name="SplitHeading" xml:space="preserve"><value>Podijeli ovaj trošak (opciono)</value></data>
+  <data name="SplitHelp" xml:space="preserve"><value>Unesite udio svakog člana; ostavite prazno da preskočite. Zbir treba odgovarati ukupnom iznosu.</value></data>
+  <data name="SplitEquallyButton" xml:space="preserve"><value>Podijeli jednako</value></data>
+
+  <data name="NewBillTitle" xml:space="preserve"><value>Novi račun</value></data>
+  <data name="EditBillTitle" xml:space="preserve"><value>Izmjena računa</value></data>
+  <data name="BillNameLabel" xml:space="preserve"><value>Naziv</value></data>
+  <data name="DueDateLabel" xml:space="preserve"><value>Datum dospijeća</value></data>
+  <data name="RecurrenceLabel" xml:space="preserve"><value>Ponavljanje</value></data>
+  <data name="RecurrenceNone" xml:space="preserve"><value>Jednokratno</value></data>
+  <data name="RecurrenceMonthly" xml:space="preserve"><value>Mjesečno</value></data>
+  <data name="RecurrenceYearly" xml:space="preserve"><value>Godišnje</value></data>
+
+  <data name="SaveButton" xml:space="preserve"><value>Sačuvaj</value></data>
+  <data name="CancelButton" xml:space="preserve"><value>Otkaži</value></data>
+  <data name="BackButton" xml:space="preserve"><value>Nazad</value></data>
+</root>

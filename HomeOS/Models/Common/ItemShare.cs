@@ -10,7 +10,10 @@ public enum ShareableType
     Reminder = 1,
     Note = 2,
     Event = 3,
-    ShoppingList = 4
+    ShoppingList = 4,
+    Transaction = 5,
+    Bill = 6,
+    Document = 7
 }
 
 // A grant that makes one item (identified by Type + ItemId) visible to one

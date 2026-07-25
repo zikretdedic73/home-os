@@ -1,0 +1,167 @@
+@using HomeOS.Models.Finance
+@model FinanceOverviewViewModel
+@inject Microsoft.Extensions.Localization.IStringLocalizer<HomeOS.Controllers.FinanceController> L
+@inject Microsoft.Extensions.Localization.IStringLocalizer<FinanceEnums> E
+@{
+    ViewData["Title"] = L["PageTitle"];
+    var monthName = new DateTime(Model.Year, Model.Month, 1).ToString("MMMM yyyy");
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">@L["PageTitle"] <span class="text-muted fs-5">— @monthName</span></h2>
+    <div class="d-flex gap-2">
+        <a asp-action="CreateTransaction" class="btn btn-primary btn-sm">@L["AddTransactionButton"]</a>
+        <a asp-action="CreateBill" class="btn btn-outline-primary btn-sm">@L["AddBillButton"]</a>
+    </div>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">@TempData["Success"]</div>
+}
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-4">
+        <div class="card h-100"><div class="card-body">
+            <div class="text-muted small">@L["IncomeLabel"]</div>
+            <div class="fs-4 text-success">@Model.TotalIncome.ToString("N2")</div>
+        </div></div>
+    </div>
+    <div class="col-6 col-md-4">
+        <div class="card h-100"><div class="card-body">
+            <div class="text-muted small">@L["ExpenseLabel"]</div>
+            <div class="fs-4 text-danger">@Model.TotalExpense.ToString("N2")</div>
+        </div></div>
+    </div>
+    <div class="col-12 col-md-4">
+        <div class="card h-100"><div class="card-body">
+            <div class="text-muted small">@L["NetLabel"]</div>
+            <div class="fs-4 @(Model.Net < 0 ? "text-danger" : "text-success")">@Model.Net.ToString("N2")</div>
+        </div></div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-12 col-lg-6">
+        <h5>@L["BudgetsHeading"]</h5>
+        <form asp-action="AddCategory" method="post" class="d-flex gap-2 mb-3">
+            <input type="text" name="name" class="form-control form-control-sm" placeholder="@L["AddCategoryPlaceholder"]" required />
+            <button type="submit" class="btn btn-outline-secondary btn-sm">@L["AddButton"]</button>
+        </form>
+
+        @if (!Model.Categories.Any())
+        {
+            <p class="text-muted">@L["NoCategories"]</p>
+        }
+        else
+        {
+            foreach (var c in Model.Categories)
+            {
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <span class="fw-medium">@c.Category.Name</span>
+                        <span class="small @(c.OverBudget ? "text-danger fw-bold" : "text-muted")">
+                            @if (c.Limit.HasValue)
+                            {
+                                @string.Format(L["SpentOf"].Value, c.Spent.ToString("N2"), c.Limit.Value.ToString("N2"))
+                            }
+                            else
+                            {
+                                @($"{c.Spent.ToString("N2")} · ")<text> </text>@L["NoBudget"]
+                            }
+                        </span>
+                    </div>
+                    @if (c.Limit is > 0)
+                    {
+                        <div class="progress" style="height: 6px;">
+                            <div class="progress-bar @(c.OverBudget ? "bg-danger" : "bg-success")" style="width: @c.PercentUsed%"></div>
+                        </div>
+                    }
+                    <form asp-action="SetBudget" method="post" class="d-flex gap-1 mt-1">
+                        <input type="hidden" name="categoryId" value="@c.Category.Id" />
+                        <input type="number" step="0.01" min="0" name="monthlyLimit" value="@(c.Limit ?? 0)" class="form-control form-control-sm" style="max-width: 8rem;" />
+                        <button type="submit" class="btn btn-outline-secondary btn-sm">@L["SetButton"]</button>
+                    </form>
+                </div>
+            }
+        }
+    </div>
+
+    <div class="col-12 col-lg-6">
+        <h5>@L["BillsHeading"]</h5>
+        @if (!Model.Bills.Any())
+        {
+            <p class="text-muted">@L["NoBills"]</p>
+        }
+        else
+        {
+            <table class="table table-sm align-middle">
+                <thead><tr>
+                    <th>@L["ColName"]</th><th>@L["ColAmount"]</th><th>@L["ColDue"]</th><th></th>
+                </tr></thead>
+                <tbody>
+                @foreach (var b in Model.Bills)
+                {
+                    <tr class="@(b.IsPaid ? "text-muted" : "")">
+                        <td>@b.Name</td>
+                        <td>@b.Amount.ToString("N2")</td>
+                        <td>@b.DueDate.ToString("dd.MM.yyyy")</td>
+                        <td class="text-end">
+                            @if (b.IsPaid)
+                            {
+                                <span class="badge bg-secondary">@L["PaidBadge"]</span>
+                            }
+                            else
+                            {
+                                <form asp-action="MarkBillPaid" method="post" class="d-inline">
+                                    <input type="hidden" name="id" value="@b.Id" />
+                                    <button type="submit" class="btn btn-outline-success btn-sm">@L["MarkPaidButton"]</button>
+                                </form>
+                            }
+                            <a asp-action="EditBill" asp-route-id="@b.Id" class="btn btn-outline-secondary btn-sm">@L["EditLink"]</a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+<hr class="my-4" />
+
+<h5>@L["RecentHeading"]</h5>
+@if (!Model.RecentTransactions.Any())
+{
+    <p class="text-muted">@L["NoTransactions"]</p>
+}
+else
+{
+    <div class="table-responsive">
+    <table class="table table-sm align-middle">
+        <thead><tr>
+            <th>@L["ColDate"]</th><th>@L["ColDescription"]</th><th>@L["ColCategory"]</th>
+            <th>@L["ColType"]</th><th class="text-end">@L["ColAmount"]</th><th></th>
+        </tr></thead>
+        <tbody>
+        @foreach (var t in Model.RecentTransactions)
+        {
+            <tr>
+                <td>@t.OccurredOn.ToString("dd.MM.yyyy")</td>
+                <td>@t.Description</td>
+                <td>@(t.Category?.Name ?? "—")</td>
+                <td>@E[$"TransactionType_{t.Type}"]</td>
+                <td class="text-end @(t.Type == TransactionType.Expense ? "text-danger" : "text-success")">@t.Amount.ToString("N2")</td>
+                <td class="text-end">
+                    <a asp-action="EditTransaction" asp-route-id="@t.Id" class="btn btn-outline-secondary btn-sm">@L["EditLink"]</a>
+                    <form asp-action="DeleteTransaction" method="post" class="d-inline" onsubmit="return confirm('@L["DeleteLink"]?');">
+                        <input type="hidden" name="id" value="@t.Id" />
+                        <button type="submit" class="btn btn-outline-danger btn-sm">@L["DeleteLink"]</button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    </div>
+}

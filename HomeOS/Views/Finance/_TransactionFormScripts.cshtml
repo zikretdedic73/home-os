@@ -1,0 +1,24 @@
+<script>
+    (function () {
+        var sel = document.getElementById('visibilitySelect');
+        var block = document.getElementById('shareMembersBlock');
+        if (sel && block) {
+            function sync() { block.style.display = sel.value === 'SpecificMembers' ? '' : 'none'; }
+            sel.addEventListener('change', sync);
+            sync();
+        }
+
+        // "Split equally" fills each member's share = total / member count.
+        var btn = document.getElementById('splitEqually');
+        var amountEl = document.getElementById('txAmount');
+        if (btn && amountEl) {
+            btn.addEventListener('click', function () {
+                var inputs = Array.prototype.slice.call(document.querySelectorAll('.split-amount'));
+                var total = parseFloat(amountEl.value);
+                if (!inputs.length || isNaN(total)) return;
+                var each = Math.round((total / inputs.length) * 100) / 100;
+                inputs.forEach(function (i) { i.value = each.toFixed(2); });
+            });
+        }
+    })();
+</script>

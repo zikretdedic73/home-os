@@ -1,0 +1,85 @@
+@using HomeOS.Models.Finance
+@using HomeOS.Models.Households
+@using HomeOS.Models.Common
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model Transaction
+@inject Microsoft.Extensions.Localization.IStringLocalizer<HomeOS.Controllers.FinanceController> L
+@inject Microsoft.Extensions.Localization.IStringLocalizer<FinanceEnums> E
+@inject Microsoft.Extensions.Localization.IStringLocalizer<VisibilityLabels> VisLoc
+@{
+    var categories = ViewData["Categories"] as List<Category> ?? new List<Category>();
+    var members = ViewData["Members"] as List<Member> ?? new List<Member>();
+    var shareMemberIds = ViewData["ShareMemberIds"] as List<int> ?? new List<int>();
+    var typeOptions = Enum.GetValues<TransactionType>()
+        .Select(t => new SelectListItem(E[$"TransactionType_{t}"].Value, t.ToString()));
+    var visibilityOptions = new List<SelectListItem>
+    {
+        new(VisLoc["Household"].Value, "Household"),
+        new(VisLoc["Private"].Value, "Private"),
+        new(VisLoc["SpecificMembers"].Value, "SpecificMembers")
+    };
+}
+
+<div class="col-12 col-md-6">
+    <label class="form-label">@L["DescriptionLabel"]</label>
+    <input asp-for="Description" class="form-control" required />
+    <span asp-validation-for="Description" class="text-danger"></span>
+</div>
+<div class="col-6 col-md-3">
+    <label class="form-label">@L["AmountLabel"]</label>
+    <input asp-for="Amount" type="number" step="0.01" min="0" class="form-control" id="txAmount" required />
+</div>
+<div class="col-6 col-md-3">
+    <label class="form-label">@L["TypeLabel"]</label>
+    <select asp-for="Type" class="form-select" asp-items="typeOptions"></select>
+</div>
+<div class="col-6 col-md-4">
+    <label class="form-label">@L["CategoryLabel"]</label>
+    <select asp-for="CategoryId" class="form-select">
+        <option value="">@L["NoCategoryOption"]</option>
+        @foreach (var c in categories)
+        {
+            <option value="@c.Id">@c.Name</option>
+        }
+    </select>
+</div>
+<div class="col-6 col-md-4">
+    <label class="form-label">@L["DateLabel"]</label>
+    <input asp-for="OccurredOn" type="date" class="form-control" />
+</div>
+<div class="col-12 col-md-4">
+    <label class="form-label">@VisLoc["Label"]</label>
+    <select asp-for="Visibility" class="form-select" asp-items="visibilityOptions" id="visibilitySelect"></select>
+</div>
+
+<div class="col-12" id="shareMembersBlock" style="@(Model.Visibility == Visibility.SpecificMembers ? "" : "display:none;")">
+    <label class="form-label">@VisLoc["SpecificMembersHelp"]</label>
+    <div class="d-flex flex-wrap gap-3 border rounded p-2">
+        @foreach (var m in members)
+        {
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="shareMemberIds" value="@m.Id" id="share_@m.Id" checked="@shareMemberIds.Contains(m.Id)" />
+                <label class="form-check-label" for="share_@m.Id">@m.DisplayName</label>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="col-12">
+    <div class="d-flex align-items-center gap-2">
+        <label class="form-label mb-0">@L["SplitHeading"]</label>
+        <button type="button" class="btn btn-outline-secondary btn-sm" id="splitEqually">@L["SplitEquallyButton"]</button>
+    </div>
+    <div class="form-text mb-2">@L["SplitHelp"]</div>
+    <div class="row g-2">
+        @foreach (var m in members)
+        {
+            var existing = Model.Shares?.FirstOrDefault(s => s.MemberId == m.Id)?.Amount;
+            <div class="col-6 col-md-4 d-flex align-items-center gap-2">
+                <input type="hidden" name="splitMemberIds" value="@m.Id" />
+                <span class="small flex-grow-1 text-truncate">@m.DisplayName</span>
+                <input type="number" step="0.01" min="0" name="splitAmounts" value="@(existing?.ToString("0.00") ?? "")" class="form-control form-control-sm split-amount" style="max-width: 7rem;" />
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,20 @@
+@using HomeOS.Models.Finance
+@using HomeOS.Models.Common
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model Bill
+@inject Microsoft.Extensions.Localization.IStringLocalizer<HomeOS.Controllers.FinanceController> L
+@inject Microsoft.Extensions.Localization.IStringLocalizer<VisibilityLabels> VisLoc
+@{
+    ViewData["Title"] = L["NewBillTitle"];
+}
+
+<h2>@L["NewBillTitle"]</h2>
+
+<form asp-action="CreateBill" method="post" class="row g-3 mt-2">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <partial name="_BillFields" model="Model" />
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">@L["SaveButton"]</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">@L["CancelButton"]</a>
+    </div>
+</form>

@@ -19,6 +19,7 @@ public class TaskAssignedEmailHandler : IEventHandler<TaskAssignedEvent>
     private readonly IEmailSender _emailSender;
     private readonly UserManager<IdentityUser> _userManager;
     private readonly INotificationPreferenceService _preferences;
+    private readonly IAppUrlBuilder _urlBuilder;
     private readonly IStringLocalizer<TaskAssignedEmailHandler> _localizer;
 
     public TaskAssignedEmailHandler(
@@ -26,12 +27,14 @@ public class TaskAssignedEmailHandler : IEventHandler<TaskAssignedEvent>
         IEmailSender emailSender,
         UserManager<IdentityUser> userManager,
         INotificationPreferenceService preferences,
+        IAppUrlBuilder urlBuilder,
         IStringLocalizer<TaskAssignedEmailHandler> localizer)
     {
         _context = context;
         _emailSender = emailSender;
         _userManager = userManager;
         _preferences = preferences;
+        _urlBuilder = urlBuilder;
         _localizer = localizer;
     }
 
@@ -52,7 +55,13 @@ public class TaskAssignedEmailHandler : IEventHandler<TaskAssignedEvent>
         var due = integrationEvent.DueDateUtc.HasValue
             ? integrationEvent.DueDateUtc.Value.ToString("dd.MM.yyyy")
             : _localizer["NoDueDate"].Value;
+
         var body = string.Format(_localizer["TaskAssignedEmailBody"], integrationEvent.Title, due);
+
+        // Deep link straight to the task, so the recipient opens it in one click.
+        var url = _urlBuilder.ActionUrl("Edit", "Tasks", new { id = integrationEvent.TaskId });
+        if (!string.IsNullOrEmpty(url))
+            body += string.Format(_localizer["TaskAssignedEmailLink"], url);
 
         await _emailSender.SendEmailAsync(user.Email, subject, body);
     }

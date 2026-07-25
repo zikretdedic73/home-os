@@ -28,12 +28,15 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentHouseholdService, CurrentHouseholdService>();
 builder.Services.AddSingleton<IRecurrenceService, RecurrenceService>();
-builder.Services.Configure<ResendOptions>(builder.Configuration.GetSection("Resend"));
-builder.Services.AddHttpClient<IEmailSender, ResendEmailSender>();
+// E-mail is sent via Gmail SMTP (MailKit). The App Password is a secret and
+// comes from user-secrets/environment (see README/appsettings placeholder).
+builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp"));
+builder.Services.AddScoped<IEmailSender, GmailEmailSender>();
 builder.Services.AddScoped<IReminderNotificationService, ReminderNotificationService>();
 builder.Services.AddScoped<ITaskWorkflowService, TaskWorkflowService>();
 builder.Services.AddScoped<INotificationPreferenceService, NotificationPreferenceService>();
 builder.Services.AddScoped<IItemSharingService, ItemSharingService>();
+builder.Services.AddScoped<IAppUrlBuilder, AppUrlBuilder>();
 
 // --- Event bus - modules publish "key moments" and others react, without
 // direct dependency (Docs/00_Specifikacija_Izvor.md, "Kooperacija bez direktne

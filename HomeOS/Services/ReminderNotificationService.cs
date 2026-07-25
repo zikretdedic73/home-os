@@ -13,6 +13,7 @@ public class ReminderNotificationService : IReminderNotificationService
     private readonly IEmailSender _emailSender;
     private readonly UserManager<IdentityUser> _userManager;
     private readonly INotificationPreferenceService _preferences;
+    private readonly IAppUrlBuilder _urlBuilder;
     private readonly IStringLocalizer<ReminderNotificationService> _localizer;
 
     public ReminderNotificationService(
@@ -20,12 +21,14 @@ public class ReminderNotificationService : IReminderNotificationService
         IEmailSender emailSender,
         UserManager<IdentityUser> userManager,
         INotificationPreferenceService preferences,
+        IAppUrlBuilder urlBuilder,
         IStringLocalizer<ReminderNotificationService> localizer)
     {
         _context = context;
         _emailSender = emailSender;
         _userManager = userManager;
         _preferences = preferences;
+        _urlBuilder = urlBuilder;
         _localizer = localizer;
     }
 
@@ -59,6 +62,11 @@ public class ReminderNotificationService : IReminderNotificationService
                         _localizer["ReminderDueEmailBody"],
                         reminder.Title,
                         reminder.TriggerAtUtc.ToString("dd.MM.yyyy HH:mm"));
+
+                    // One-click link back to the reminder.
+                    var url = _urlBuilder.ActionUrl("Edit", "Reminders", new { id = reminder.Id });
+                    if (!string.IsNullOrEmpty(url))
+                        body += string.Format(_localizer["ReminderDueEmailLink"], url);
 
                     emailSent = await _emailSender.SendEmailAsync(user.Email, subject, body);
                 }

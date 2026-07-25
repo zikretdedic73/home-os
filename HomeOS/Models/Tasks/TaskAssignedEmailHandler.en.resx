@@ -21,4 +21,7 @@
   <data name="NoDueDate" xml:space="preserve">
     <value>no due date</value>
   </data>
+  <data name="TaskAssignedEmailLink" xml:space="preserve">
+    <value>&lt;p&gt;&lt;a href="{0}"&gt;Open the task&lt;/a&gt;&lt;/p&gt;</value>
+  </data>
 </root>

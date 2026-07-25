@@ -19,11 +19,13 @@ public class TasksController : Controller
     private readonly ICurrentHouseholdService _household;
     private readonly IStringLocalizer<TasksController> _localizer;
     private readonly IEventBus _eventBus;
+    private readonly ITaskWorkflowService _workflow;
 
-    public TasksController(ApplicationDbContext context, ICurrentHouseholdService household, IStringLocalizer<TasksController> localizer, IEventBus eventBus)
+    public TasksController(ApplicationDbContext context, ICurrentHouseholdService household, IStringLocalizer<TasksController> localizer, IEventBus eventBus, ITaskWorkflowService workflow)
     {
         _context = context;
         _household = household;
+        _workflow = workflow;
         _localizer = localizer;
         _eventBus = eventBus;
     }
@@ -155,11 +157,13 @@ public class TasksController : Controller
         task.Description = model.Description;
         task.DueDate = model.DueDate;
         task.Priority = model.Priority;
-        task.Status = model.Status;
         task.AssigneeId = model.AssigneeId;
         task.RecurrenceRule = model.RecurrenceRule;
         task.Visibility = model.Visibility;
-        task.UpdatedAtUtc = DateTime.UtcNow;
+
+        // Applies the status change and, if a recurring task moved to Done,
+        // spawns its next occurrence (Docs/00 - "ponavljajući zadaci").
+        await _workflow.ApplyStatusChangeAsync(task, model.Status);
 
         _context.TaskTags.RemoveRange(task.TaskTags);
         await _context.SaveChangesAsync();

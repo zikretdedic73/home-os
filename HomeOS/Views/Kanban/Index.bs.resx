@@ -13,21 +13,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PageTitle" xml:space="preserve">
-    <value>Kanban table</value>
+    <value>Kanban tabla</value>
   </data>
-  <data name="NewBoardPlaceholder" xml:space="preserve">
-    <value>Naziv nove table...</value>
+  <data name="Intro" xml:space="preserve">
+    <value>Zadaci vašeg domaćinstva po statusu. Prevucite karticu da promijenite status.</value>
   </data>
-  <data name="CreateButton" xml:space="preserve">
-    <value>Kreiraj tablu</value>
+  <data name="EmptyColumn" xml:space="preserve">
+    <value>Nema zadataka</value>
   </data>
-  <data name="NoBoards" xml:space="preserve">
-    <value>Još nema tabli. Kreirajte jednu iznad.</value>
-  </data>
-  <data name="OpenButton" xml:space="preserve">
-    <value>Otvori</value>
-  </data>
-  <data name="DeleteButton" xml:space="preserve">
-    <value>Obriši</value>
+  <data name="NoTasks" xml:space="preserve">
+    <value>Još nema zadataka. Kreirajte zadatke i automatski se pojave ovdje.</value>
   </data>
 </root>

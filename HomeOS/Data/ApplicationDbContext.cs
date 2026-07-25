@@ -1,6 +1,5 @@
 using HomeOS.Models.Calendar;
 using HomeOS.Models.Households;
-using HomeOS.Models.Kanban;
 using HomeOS.Models.Modules;
 using HomeOS.Models.Notes;
 using HomeOS.Models.Reminders;
@@ -34,9 +33,6 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     public DbSet<ModuleState> ModuleStates => Set<ModuleState>();
     public DbSet<ModulePermissionState> ModulePermissionStates => Set<ModulePermissionState>();
     public DbSet<MemberModuleAccess> MemberModuleAccesses => Set<MemberModuleAccess>();
-    public DbSet<Board> Boards => Set<Board>();
-    public DbSet<Column> Columns => Set<Column>();
-    public DbSet<Card> Cards => Set<Card>();
     public DbSet<Note> Notes => Set<Note>();
     public DbSet<NoteTag> NoteTags => Set<NoteTag>();
     public DbSet<ShoppingList> ShoppingLists => Set<ShoppingList>();
@@ -96,22 +92,6 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
             .HasIndex(p => new { p.HouseholdId, p.ModuleKey, p.Permission }).IsUnique();
         builder.Entity<MemberModuleAccess>()
             .HasIndex(a => new { a.HouseholdId, a.MemberId, a.ModuleKey }).IsUnique();
-
-        // Kanban: Board (1)-<(N) Column (1)-<(N) Card; Card links a TaskItem
-        // (no cascade from task - deleting a task shouldn't silently drop cards).
-        builder.Entity<Column>()
-            .HasOne(c => c.Board).WithMany(b => b.Columns)
-            .HasForeignKey(c => c.BoardId).OnDelete(DeleteBehavior.Cascade);
-
-        builder.Entity<Card>()
-            .HasOne(c => c.Column).WithMany(col => col.Cards)
-            .HasForeignKey(c => c.ColumnId).OnDelete(DeleteBehavior.Cascade);
-
-        builder.Entity<Card>()
-            .HasOne(c => c.TaskItem).WithMany()
-            .HasForeignKey(c => c.TaskItemId).OnDelete(DeleteBehavior.Cascade);
-
-        builder.Entity<Board>().HasIndex(b => b.HouseholdId);
 
         // NoteTag is a many-to-many join reusing the shared Tag entity
         builder.Entity<NoteTag>().HasKey(nt => new { nt.NoteId, nt.TagId });

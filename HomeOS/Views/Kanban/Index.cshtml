@@ -1,43 +1,96 @@
-@model List<HomeOS.Models.Kanban.Board>
+@model HomeOS.Models.Kanban.KanbanBoardViewModel
+@using HomeOS.Models.Tasks
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@inject Microsoft.Extensions.Localization.IStringLocalizer<TaskEnums> EnumLocalizer
 @{
     ViewData["Title"] = Localizer["PageTitle"];
+    var totalTasks = Model.Columns.Sum(c => c.Tasks.Count);
 }
 
-<h2 class="mb-3">@Localizer["PageTitle"]</h2>
+<h2 class="mb-1">@Localizer["PageTitle"]</h2>
+<p class="text-muted">@Localizer["Intro"]</p>
 
-<form asp-action="CreateBoard" method="post" class="row g-2 mb-4" style="max-width: 32rem;">
-    <div class="col">
-        <input type="text" name="name" class="form-control" placeholder="@Localizer["NewBoardPlaceholder"]" required />
-    </div>
-    <div class="col-auto">
-        <button type="submit" class="btn btn-primary">@Localizer["CreateButton"]</button>
-    </div>
-</form>
-
-@if (!Model.Any())
+@if (totalTasks == 0)
 {
-    <p class="text-muted">@Localizer["NoBoards"]</p>
+    <p class="text-muted">@Localizer["NoTasks"]</p>
 }
 else
 {
-    <div class="row g-3">
-        @foreach (var board in Model)
+    @Html.AntiForgeryToken()
+    <div class="row g-3 flex-nowrap overflow-auto pb-2">
+        @foreach (var column in Model.Columns)
         {
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100">
-                    <div class="card-body d-flex justify-content-between align-items-center">
-                        <h5 class="card-title mb-0">📋 @board.Name</h5>
-                        <div class="d-flex gap-2">
-                            <a asp-action="Board" asp-route-id="@board.Id" class="btn btn-sm btn-primary">@Localizer["OpenButton"]</a>
-                            <form asp-action="DeleteBoard" method="post" class="mb-0" onsubmit="return confirm('@board.Name');">
-                                <input type="hidden" name="id" value="@board.Id" />
-                                <button type="submit" class="btn btn-sm btn-outline-danger">@Localizer["DeleteButton"]</button>
-                            </form>
-                        </div>
+            var borderClass = column.Status switch
+            {
+                TaskState.Done => "border-success",
+                TaskState.InProgress => "border-info",
+                _ => "border-secondary"
+            };
+            <div class="col-12 col-md-4">
+                <div class="card h-100 border-top border-4 @borderClass">
+                    <div class="card-header fw-semibold bg-transparent d-flex justify-content-between">
+                        <span>@EnumLocalizer[$"TaskState_{column.Status}"]</span>
+                        <span class="badge bg-secondary">@column.Tasks.Count</span>
+                    </div>
+                    <div class="card-body kanban-column p-2" data-status="@column.Status" style="min-height: 8rem;">
+                        @if (!column.Tasks.Any())
+                        {
+                            <p class="text-muted small text-center py-3 kanban-empty">@Localizer["EmptyColumn"]</p>
+                        }
+                        @foreach (var task in column.Tasks)
+                        {
+                            var priorityClass = task.Priority switch
+                            {
+                                TaskPriority.Urgent => "border-danger",
+                                TaskPriority.High => "border-warning",
+                                _ => "border-light"
+                            };
+                            <div class="card mb-2 shadow-sm kanban-card border-start border-3 @priorityClass @(task.IsOverdue ? "bg-danger-subtle" : "")" data-task-id="@task.Id">
+                                <div class="card-body p-2">
+                                    <a asp-controller="Tasks" asp-action="Edit" asp-route-id="@task.Id" class="fw-medium text-decoration-none d-block">@task.Title</a>
+                                    <span class="badge bg-info text-dark">@EnumLocalizer[$"TaskPriority_{task.Priority}"]</span>
+                                    @if (task.DueDate.HasValue)
+                                    {
+                                        <span class="small text-muted">📅 @task.DueDate.Value.ToString("dd.MM.yyyy")</span>
+                                    }
+                                </div>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
         }
     </div>
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.3/Sortable.min.js"></script>
+    <script>
+        (function () {
+            var tokenEl = document.querySelector('input[name="__RequestVerificationToken"]');
+            if (!tokenEl) return;
+            var token = tokenEl.value;
+            var moveUrl = '@Url.Action("MoveTask")';
+
+            document.querySelectorAll('.kanban-column').forEach(function (col) {
+                new Sortable(col, {
+                    group: 'kanban',
+                    animation: 150,
+                    draggable: '.kanban-card',
+                    onEnd: function (evt) {
+                        var taskId = evt.item.getAttribute('data-task-id');
+                        var toStatus = evt.to.getAttribute('data-status');
+                        var body = new URLSearchParams();
+                        body.append('taskId', taskId);
+                        body.append('toStatus', toStatus);
+                        body.append('__RequestVerificationToken', token);
+                        fetch(moveUrl, { method: 'POST', body: body })
+                            .then(function (r) { return r.json(); })
+                            .then(function (d) { if (!d.success) { location.reload(); } })
+                            .catch(function () { location.reload(); });
+                    }
+                });
+            });
+        })();
+    </script>
 }

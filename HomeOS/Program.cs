@@ -31,6 +31,7 @@ builder.Services.AddSingleton<IRecurrenceService, RecurrenceService>();
 builder.Services.Configure<ResendOptions>(builder.Configuration.GetSection("Resend"));
 builder.Services.AddHttpClient<IEmailSender, ResendEmailSender>();
 builder.Services.AddScoped<IReminderNotificationService, ReminderNotificationService>();
+builder.Services.AddScoped<ITaskWorkflowService, TaskWorkflowService>();
 
 // --- Event bus - modules publish "key moments" and others react, without
 // direct dependency (Docs/00_Specifikacija_Izvor.md, "Kooperacija bez direktne
@@ -60,8 +61,9 @@ builder.Services.AddScoped<IModuleDescriptor, RemindersModule>();
 builder.Services.AddScoped<ISearchable, ReminderSearchProvider>();
 builder.Services.AddScoped<IDashboardContributor, RemindersDashboardContributor>();
 
+// Kanban is a live view over Tasks (auto-formed by status), so it has no data
+// of its own to search - tasks are already covered by TaskSearchProvider.
 builder.Services.AddScoped<IModuleDescriptor, KanbanModule>();
-builder.Services.AddScoped<ISearchable, BoardSearchProvider>();
 
 builder.Services.AddScoped<IModuleDescriptor, NotesModule>();
 builder.Services.AddScoped<ISearchable, NoteSearchProvider>();
